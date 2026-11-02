@@ -23,7 +23,7 @@ Redmine::Plugin.register :redmine_rubylode_uptime_kuma do
   author "Rubylode"
   author_url "https://github.com/rubylode"
   description "A live service status block from Uptime Kuma: a wiki macro, a page, a My page block and a partial"
-  version "0.2.0"
+  version "0.2.1"
   requires_redmine version_or_higher: "7.0.0"
 
   menu :top_menu, :rubylode_service_status, { controller: "rubylode_service_status", action: "show" },

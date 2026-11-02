@@ -117,6 +117,10 @@ ruby bin/demo down
 
 Sign in as `admin` / `admin` (sees the settings and the hints) or `sam.rivera` / `demo-password-1`. The fake Kuma is `test/support/fake_kuma_server.rb`: Prometheus text like Kuma's `/metrics`, with the token required as the basic-auth password. `npm install && npm run screenshots` retakes the screenshots.
 
+## Troubleshooting
+
+- **A cache problem never breaks the page.** If the cache store cannot be read or written (a cache file owned by another user, a full disk), the plugin logs a warning with the error class and message, treats it as an empty cache and fetches live; the page still answers.
+
 ## Tests
 
 ```

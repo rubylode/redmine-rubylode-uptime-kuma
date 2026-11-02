@@ -88,6 +88,8 @@ class RubylodeUptimeKuma::ServiceStatusTest < ActiveSupport::TestCase
 end
 
 class RubylodeUptimeKuma::ServiceStatusResilienceTest < ActiveSupport::TestCase
+  include RubylodeUptimeKumaTestHelpers
+
   SERVICES = [RubylodeUptimeKuma::ServiceStatus::Service.new("Billing", "https://billing.example.com/", "Invoices", "Billing app")].freeze
   METRICS = %(monitor_status{monitor_name="Billing app",monitor_type="http"} 1)
 
@@ -160,5 +162,66 @@ class RubylodeUptimeKuma::ServiceStatusResilienceTest < ActiveSupport::TestCase
   test "a different metrics url does not read another url's cached answer" do
     refute_equal RubylodeUptimeKuma::ServiceStatus.cache_key_for("https://a.example.com/metrics"),
                  RubylodeUptimeKuma::ServiceStatus.cache_key_for("https://b.example.com/metrics")
+  end
+
+  test "a cache that cannot be read or written still gives the report from a live fetch, and logs a warning" do
+    calls = 0
+    status = status_with(cache: RubylodeUptimeKumaTestHelpers::UnwritableCache.new) { calls += 1; METRICS }
+
+    report = nil
+    log = captured_log { report = status.report }
+
+    refute report.unavailable?
+    assert_equal :up, report.services.first.state
+    assert_equal 1, calls
+    assert_includes log, "WARN"
+    assert_includes log, "Errno::EACCES"
+  end
+
+  test "a cache that cannot be written still gives the report from a live fetch" do
+    status = status_with(cache: RubylodeUptimeKumaTestHelpers::UnwritableCache.new(read: false)) { METRICS }
+
+    report = nil
+    log = captured_log { report = status.report }
+
+    refute report.unavailable?
+    assert_equal :up, report.services.first.state
+    assert_includes log, "cache write failed"
+  end
+
+  test "a failed fetch with a cache that cannot be written is the status unavailable report" do
+    status = status_with(cache: RubylodeUptimeKumaTestHelpers::UnwritableCache.new) { raise RubylodeUptimeKuma::KumaMetrics::Unavailable, "Kuma did not answer" }
+
+    report = nil
+    captured_log { report = status.report }
+
+    assert report.unavailable?
+    assert_equal "Kuma did not answer", report.failure_reason
+  end
+
+  test "any error from the cache store is ignored, not only system call errors" do
+    cache = Object.new
+    def cache.read(*) = raise(TypeError, "incompatible marshal file format")
+    def cache.write(*) = raise(IOError, "closed stream")
+
+    report = nil
+    captured_log { report = status_with(cache: cache) { METRICS }.report }
+
+    refute report.unavailable?
+  end
+
+  test "safe_report answers status unavailable and logs the class when building the report raises" do
+    configuration = RubylodeUptimeKuma::Configuration.current
+    report = nil
+    log = captured_log do
+      replacing_method(RubylodeUptimeKuma::ServiceStatus, :current, ->(*) { raise ArgumentError, "boom" }) do
+        report = RubylodeUptimeKuma::ServiceStatus.safe_report(configuration)
+      end
+    end
+
+    assert report.unavailable?
+    assert_equal "Status unavailable", report.summary
+    assert_equal "ArgumentError", report.failure_reason
+    assert_includes log, "ArgumentError: boom"
   end
 end

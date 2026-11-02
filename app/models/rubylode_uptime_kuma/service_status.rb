@@ -48,6 +48,14 @@ module RubylodeUptimeKuma
         "rubylode_uptime_kuma/metrics/#{Digest::SHA256.hexdigest(metrics_url.to_s)[0, 16]}"
       end
 
+      # The report for a page. Whatever goes wrong while building it, the page gets a "status unavailable" report and never an error.
+      def safe_report(configuration = Configuration.current)
+        current(configuration).report
+      rescue StandardError => error
+        Rails.logger.warn("Rubylode Uptime Kuma: could not build the status block: #{error.class}: #{error.message}")
+        Report.new([], I18n.t("rubylode_uptime_kuma.status.unavailable"), true, error.class.name)
+      end
+
       def current(configuration = Configuration.current)
         new(services: configuration.services,
             fetch_metrics: -> { KumaMetrics.from_configuration(configuration).call },
@@ -84,19 +92,37 @@ module RubylodeUptimeKuma
     private
 
     def cached_metrics
-      metrics = @cache.read(@cache_key)
+      metrics = read_cache
       if metrics.nil?
         begin
           metrics = @fetch_metrics.call
-          @cache.write(@cache_key, metrics, expires_in: @cache_seconds) if @cache_seconds.positive?
+          write_cache(metrics, @cache_seconds) if @cache_seconds.positive?
         rescue KumaMetrics::Unavailable => error
           metrics = "#{FAILURE_MARKER}|#{error.message}"
-          @cache.write(@cache_key, metrics, expires_in: @failure_seconds) if @failure_seconds.positive?
+          write_cache(metrics, @failure_seconds) if @failure_seconds.positive?
         end
       end
       raise KumaMetrics::Unavailable, failure_reason_from(metrics) if metrics.start_with?(FAILURE_MARKER)
 
       metrics
+    end
+
+    # A cache that cannot be read or written (a file owned by another user, a full disk) is a miss, not an error.
+    def read_cache
+      @cache.read(@cache_key)
+    rescue StandardError => error
+      log_cache_problem("read", error)
+      nil
+    end
+
+    def write_cache(value, seconds)
+      @cache.write(@cache_key, value, expires_in: seconds)
+    rescue StandardError => error
+      log_cache_problem("write", error)
+    end
+
+    def log_cache_problem(action, error)
+      Rails.logger.warn("Rubylode Uptime Kuma: cache #{action} failed, carrying on without it: #{error.class}: #{error.message}")
     end
 
     def failure_reason_from(marker)

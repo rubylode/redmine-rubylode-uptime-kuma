@@ -9,7 +9,7 @@
   <% block_title = local_assigns[:title].presence || configuration.block_title %>
   <% show_title = local_assigns.fetch(:show_title, true) %>
   <% if configuration.configured? %>
-    <% report = RubylodeUptimeKuma::ServiceStatus.current(configuration).report %>
+    <% report = RubylodeUptimeKuma::ServiceStatus.safe_report(configuration) %>
     <% show_response_time = configuration.show_response_time? %>
 <% compact = local_assigns.fetch(:compact, false) %>
 <div class="rubylode-service-status<%= " is-compact" if compact %>">
