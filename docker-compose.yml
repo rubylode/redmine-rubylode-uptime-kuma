@@ -1,0 +1,49 @@
+# A throwaway Redmine 7 to try the plugin in, with a fake Uptime Kuma next to it. Not a real tracker or a real Kuma.
+# Start: ruby bin/demo up, then open http://localhost:3012 (admin / admin).
+# The repository is mounted as the plugin, so a code change shows after "ruby bin/demo restart".
+# Wipe it: ruby bin/demo reset
+# Tests: ruby bin/test (runs the "test" service below)
+services:
+  redmine:
+    image: redmine:7.0.2
+    container_name: redmine-uptime-kuma-dev
+    ports:
+      - "127.0.0.1:3012:3000"
+    environment:
+      # The image ships without the development gems, so production is the mode it can boot in.
+      RAILS_ENV: production
+      # The name the plugin reads by default. The value is made up and only the fake Kuma below accepts it.
+      UPTIME_KUMA_API_TOKEN: demo-token-not-a-secret
+    depends_on:
+      - fake_kuma
+    volumes:
+      - .:/usr/src/redmine/plugins/redmine_rubylode_uptime_kuma
+      - redmine-uptime-kuma-files:/usr/src/redmine/files
+      - redmine-uptime-kuma-sqlite:/usr/src/redmine/sqlite
+
+  # Serves Prometheus text like Kuma's /metrics. Switch what it reports with: ruby bin/demo scenario one_down
+  fake_kuma:
+    image: redmine:7.0.2
+    container_name: fake-uptime-kuma-dev
+    ports:
+      - "127.0.0.1:9112:9100"
+    environment:
+      FAKE_KUMA_TOKEN: demo-token-not-a-secret
+      FAKE_KUMA_PORT: "9100"
+    command: ruby /plugin/test/support/fake_kuma_server.rb
+    volumes:
+      - .:/plugin:ro
+
+  test:
+    build:
+      context: .
+      dockerfile: docker/test.Dockerfile
+    profiles: ["test"]
+    environment:
+      RAILS_ENV: test
+    volumes:
+      - .:/usr/src/redmine/plugins/redmine_rubylode_uptime_kuma
+
+volumes:
+  redmine-uptime-kuma-files:
+  redmine-uptime-kuma-sqlite:

@@ -1,0 +1,25 @@
+<% help = "rubylode_uptime_kuma.help" %>
+<% content_for :header_tags, stylesheet_link_tag("rubylode_uptime_kuma", plugin: "redmine_rubylode_uptime_kuma") %>
+<div class="rubylode-uptime-kuma-help" id="rubylode-uptime-kuma-help">
+  <h3><%= l("#{help}.heading") %></h3>
+  <div class="rubylode-uptime-kuma-help-intro"><%= l("#{help}.intro") %></div>
+  <table class="list">
+    <thead>
+      <tr><th><%= l("#{help}.place") %></th><th><%= l("#{help}.how") %></th><th><%= l("#{help}.needs_setting") %></th></tr>
+    </thead>
+    <tbody>
+      <% [["wiki", false], ["welcome", true], ["my_page", false], ["overview", true], ["paths", true], ["page", false], ["partial", false]].each do |key, needs_setting| %>
+        <tr>
+          <td><%= l("#{help}.row_#{key}") %></td>
+          <td><%= l("#{help}.row_#{key}_how") %></td>
+          <td><%= l("#{help}.answer_#{needs_setting ? 'yes' : 'no'}") %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+  <ul class="rubylode-uptime-kuma-help-snippets">
+    <li><code>{{service_status}}</code></li>
+    <li><code>{{service_status(title=Our services)}}</code></li>
+    <li><code>render partial: "rubylode_uptime_kuma/service_status", locals: { compact: true }</code></li>
+  </ul>
+</div>

@@ -1,0 +1,202 @@
+/*
+ * Rubylode Uptime Kuma. Every colour and size is a custom property on .rubylode-service-status, so a theme restyles the
+ * block by setting them. Where the theme already has a variable (Redmine 7 ships --oc-* colours) the default follows it.
+ */
+.rubylode-service-status {
+  --rubylode-uptime-kuma-text: var(--oc-gray-9, #212529);
+  --rubylode-uptime-kuma-text-muted: var(--oc-gray-6, #6b7480);
+  --rubylode-uptime-kuma-border: var(--oc-gray-3, #dee2e6);
+  --rubylode-uptime-kuma-header-background: var(--oc-gray-1, #f1f3f5);
+  --rubylode-uptime-kuma-row-hover-background: var(--oc-gray-0, #f8f9fa);
+  --rubylode-uptime-kuma-up-color: var(--oc-green-8, #2b8a3e);
+  --rubylode-uptime-kuma-up-background: #e9f6ec;
+  --rubylode-uptime-kuma-down-color: var(--oc-red-8, #c92a2a);
+  --rubylode-uptime-kuma-down-background: #fdecec;
+  --rubylode-uptime-kuma-unknown-color: var(--oc-gray-6, #868e96);
+  --rubylode-uptime-kuma-unavailable-color: var(--oc-orange-9, #a15c07);
+  --rubylode-uptime-kuma-unavailable-background: #fff4e0;
+  --rubylode-uptime-kuma-link-color: var(--oc-blue-8, #1b4f80);
+  --rubylode-uptime-kuma-dot-size: 10px;
+  --rubylode-uptime-kuma-radius: 6px;
+  --rubylode-uptime-kuma-gap: 12px;
+  --rubylode-uptime-kuma-summary-font-size: 1.05em;
+
+  color: var(--rubylode-uptime-kuma-text);
+  margin-bottom: var(--rubylode-uptime-kuma-gap);
+}
+
+@media (prefers-color-scheme: dark) {
+  .rubylode-service-status {
+    --rubylode-uptime-kuma-text: #e9ecef;
+    --rubylode-uptime-kuma-text-muted: #9aa3ad;
+    --rubylode-uptime-kuma-border: #3b4148;
+    --rubylode-uptime-kuma-header-background: #2a2f35;
+    --rubylode-uptime-kuma-row-hover-background: #242a30;
+    --rubylode-uptime-kuma-up-color: #69db7c;
+    --rubylode-uptime-kuma-up-background: #16301d;
+    --rubylode-uptime-kuma-down-color: #ff8787;
+    --rubylode-uptime-kuma-down-background: #3b1a1a;
+    --rubylode-uptime-kuma-unknown-color: #868e96;
+    --rubylode-uptime-kuma-unavailable-color: #ffc078;
+    --rubylode-uptime-kuma-unavailable-background: #3a2b12;
+    --rubylode-uptime-kuma-link-color: #74c0fc;
+  }
+}
+
+/* A theme that marks its dark mode on the page wins over the system setting. */
+:root[data-theme="dark"] .rubylode-service-status,
+:root[data-color-scheme="dark"] .rubylode-service-status,
+body.dark .rubylode-service-status {
+  --rubylode-uptime-kuma-text: #e9ecef;
+  --rubylode-uptime-kuma-text-muted: #9aa3ad;
+  --rubylode-uptime-kuma-border: #3b4148;
+  --rubylode-uptime-kuma-header-background: #2a2f35;
+  --rubylode-uptime-kuma-row-hover-background: #242a30;
+  --rubylode-uptime-kuma-up-color: #69db7c;
+  --rubylode-uptime-kuma-up-background: #16301d;
+  --rubylode-uptime-kuma-down-color: #ff8787;
+  --rubylode-uptime-kuma-down-background: #3b1a1a;
+  --rubylode-uptime-kuma-unavailable-color: #ffc078;
+  --rubylode-uptime-kuma-unavailable-background: #3a2b12;
+  --rubylode-uptime-kuma-link-color: #74c0fc;
+}
+
+.rubylode-service-status a {
+  color: var(--rubylode-uptime-kuma-link-color);
+}
+
+.rubylode-service-status-title {
+  margin: 0 0 6px;
+}
+
+.rubylode-service-status-summary {
+  display: inline-block;
+  margin: 0 0 var(--rubylode-uptime-kuma-gap);
+  padding: 4px 12px;
+  border-radius: var(--rubylode-uptime-kuma-radius);
+  font-size: var(--rubylode-uptime-kuma-summary-font-size);
+  font-weight: 600;
+}
+
+.rubylode-service-status-summary.is-all-up {
+  color: var(--rubylode-uptime-kuma-up-color);
+  background: var(--rubylode-uptime-kuma-up-background);
+}
+
+.rubylode-service-status-summary.is-has-down {
+  color: var(--rubylode-uptime-kuma-down-color);
+  background: var(--rubylode-uptime-kuma-down-background);
+}
+
+.rubylode-service-status-summary.is-unavailable {
+  color: var(--rubylode-uptime-kuma-unavailable-color);
+  background: var(--rubylode-uptime-kuma-unavailable-background);
+}
+
+.rubylode-service-status-hint {
+  margin: 0 0 var(--rubylode-uptime-kuma-gap);
+  color: var(--rubylode-uptime-kuma-text-muted);
+}
+
+.rubylode-service-status-table {
+  width: 100%;
+  border: 1px solid var(--rubylode-uptime-kuma-border);
+  border-collapse: collapse;
+  background: transparent;
+}
+
+table.list.rubylode-service-status-table th,
+table.list.rubylode-service-status-table td {
+  padding: 6px 10px;
+  border-bottom: 1px solid var(--rubylode-uptime-kuma-border);
+  text-align: left;
+  color: var(--rubylode-uptime-kuma-text);
+}
+
+.rubylode-service-status-table thead th {
+  background: var(--rubylode-uptime-kuma-header-background);
+}
+
+.rubylode-service-status-table tbody tr:hover td {
+  background: var(--rubylode-uptime-kuma-row-hover-background);
+}
+
+.rubylode-service-status-table td.rubylode-service-status-description {
+  color: var(--rubylode-uptime-kuma-text-muted);
+}
+
+table.list.rubylode-service-status-table .rubylode-service-status-response-time {
+  text-align: right;
+  white-space: nowrap;
+}
+
+.rubylode-service-status-state {
+  white-space: nowrap;
+}
+
+.rubylode-service-status-dot {
+  display: inline-block;
+  width: var(--rubylode-uptime-kuma-dot-size);
+  height: var(--rubylode-uptime-kuma-dot-size);
+  margin-right: 6px;
+  border-radius: 50%;
+  background: var(--rubylode-uptime-kuma-unknown-color);
+}
+
+.rubylode-service-status-row.is-up .rubylode-service-status-dot {
+  background: var(--rubylode-uptime-kuma-up-color);
+}
+
+.rubylode-service-status-row.is-down .rubylode-service-status-dot {
+  background: var(--rubylode-uptime-kuma-down-color);
+}
+
+.rubylode-service-status-row.is-down .rubylode-service-status-state {
+  color: var(--rubylode-uptime-kuma-down-color);
+  font-weight: 600;
+}
+
+.rubylode-service-status-row.is-unknown .rubylode-service-status-state {
+  color: var(--rubylode-uptime-kuma-text-muted);
+}
+
+@media (max-width: 600px) {
+  .rubylode-service-status-table .rubylode-service-status-description {
+    display: none;
+  }
+}
+
+/* The one-line form used under the content of pages on the path list. */
+.rubylode-service-status.is-compact {
+  margin-top: var(--rubylode-uptime-kuma-gap);
+}
+
+.rubylode-service-status.is-compact .rubylode-service-status-summary {
+  margin-bottom: 0;
+  margin-right: 8px;
+}
+
+.rubylode-service-status-compact-down {
+  margin-right: 8px;
+  font-weight: 600;
+  color: var(--rubylode-uptime-kuma-down-color);
+}
+
+/* The help table on the plugin's settings page. */
+.rubylode-uptime-kuma-help {
+  margin-top: 24px;
+}
+
+.rubylode-uptime-kuma-help table.list th,
+.rubylode-uptime-kuma-help table.list td {
+  text-align: left;
+  vertical-align: top;
+}
+
+.rubylode-uptime-kuma-help-intro {
+  margin-bottom: 8px;
+}
+
+.rubylode-uptime-kuma-help-snippets {
+  margin-top: 12px;
+}

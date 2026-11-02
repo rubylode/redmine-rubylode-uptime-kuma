@@ -1,0 +1,60 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+# Runs the throwaway Redmine this plugin is tried in, at http://localhost:3012, with a fake Uptime Kuma next to it.
+#
+#   ruby bin/demo up                start both, run the plugin migrations, load the demo data (running it again changes nothing)
+#   ruby bin/demo restart           restart Redmine, to pick up a change to the plugin (it runs in production mode and caches code)
+#   ruby bin/demo scenario NAME     change what the fake Kuma reports: all_up, one_down, mixed (one down, one unknown), unavailable
+#   ruby bin/demo down              stop them, keep the data
+#   ruby bin/demo reset             stop them and wipe the data
+#
+# Logins: admin / admin (sees the settings and the hints), sam.rivera / demo-password-1 (an ordinary person).
+# Pages: /service_status, /my/page, /projects/demo-project/wiki, /settings/plugin/redmine_rubylode_uptime_kuma
+require "net/http"
+
+ROOT = File.expand_path("..", __dir__)
+PORT = 3012
+FAKE_KUMA_PORT = 9112
+READY_SECONDS = 240
+SEED_SCRIPT = "plugins/redmine_rubylode_uptime_kuma/script/seed_demo.rb"
+
+def compose(*arguments)
+  system("docker", "compose", *arguments, chdir: ROOT) || abort("docker compose #{arguments.join(' ')} failed")
+end
+
+def wait_until_ready
+  uri = URI("http://localhost:#{PORT}/login")
+  deadline = Time.now + READY_SECONDS
+  loop do
+    begin
+      return puts("Redmine is up at http://localhost:#{PORT}") if Net::HTTP.get_response(uri).code == "200"
+    rescue SystemCallError, EOFError, Net::ReadTimeout
+      nil
+    end
+    abort("Redmine did not answer within #{READY_SECONDS} seconds") if Time.now > deadline
+    sleep 3
+  end
+end
+
+case ARGV.first
+when "up"
+  compose("up", "-d", "redmine", "fake_kuma")
+  wait_until_ready
+  compose("exec", "-T", "redmine", "bundle", "exec", "rake", "redmine:plugins:migrate")
+  compose("exec", "-T", "redmine", "bin/rails", "runner", SEED_SCRIPT)
+when "restart"
+  compose("restart", "redmine")
+  wait_until_ready
+when "scenario"
+  name = ARGV[1] || abort("Usage: ruby bin/demo scenario all_up|one_down|mixed|unavailable")
+  response = Net::HTTP.post(URI("http://127.0.0.1:#{FAKE_KUMA_PORT}/__scenario/#{name}"), "")
+  abort("The fake Kuma said: #{response.body}") unless response.code == "200"
+  puts response.body
+when "down"
+  compose("down")
+when "reset"
+  compose("down", "-v")
+else
+  abort(File.read(__FILE__)[/\A#!.*?\n# frozen.*?\n\n((?:#.*\n)+)/m, 1].to_s.gsub(/^# ?/, ""))
+end
