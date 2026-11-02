@@ -12,7 +12,7 @@ Only the services you list are shown, under the names you choose. Services that 
 
 ## Install
 
-1. Copy this folder to `plugins/redmine_rubylode_uptime_kuma` in your Redmine.
+1. Copy this folder to `plugins/redmine_rubylode_uptime_kuma` in your Redmine, or clone it there: `git clone https://github.com/rubylode/redmine-rubylode-uptime-kuma.git redmine_rubylode_uptime_kuma`.
 2. Set the token in the environment of the Redmine process (see Security below), for example `UPTIME_KUMA_API_TOKEN`.
 3. Restart Redmine.
 4. Open Administration, Plugins, Rubylode Uptime Kuma, Configure. Fill in the metrics URL and the services list.
@@ -135,6 +135,8 @@ Replacing an in-house block: see [docs/replacing-an-in-house-block.md](docs/repl
 ## Releasing
 
 Push a `vX.Y.Z` tag whose version matches `version` in `init.rb` and has an entry in `CHANGELOG.md`. CI runs the tests, builds `redmine_rubylode_uptime_kuma-X.Y.Z.zip` and publishes the GitHub release with the changelog entry as its notes. To build a release for a tag that already exists, use Actions, release, Run workflow.
+
+The text to paste when listing the plugin on www.redmine.org, and how to read the result of Check for updates, is in [docs/redmine-org-listing.md](docs/redmine-org-listing.md).
 
 ## License
 
