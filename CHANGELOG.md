@@ -6,21 +6,26 @@ All notable changes to this plugin. The format follows [Keep a Changelog](https:
 
 ## [1.0.0] - 2026-11-02
 
-First stable release. A live service status block read from Uptime Kuma, as a wiki macro, a page, a My page block and a partial, with placements chosen in the settings.
-Its name, author and version are ready to list on redmine.org, and the plugin now shows its project address on Administration, Plugins.
+First stable release. A live service status block read from Uptime Kuma, as a wiki macro, a page, a My page block and a partial, with the places chosen in the settings.
+
+### Added
+
+- The plugins page in Administration shows the project address.
+- The plugin's name, author and version match the redmine.org listing, so "Check for updates" can find it.
 
 ## [0.2.1] - 2026-11-02
 
 ### Fixed
 
-- A cache that cannot be read or written (for example a cache file owned by another user) no longer breaks the page: the problem is logged as a warning and the block is built from a live fetch, or shows "Status unavailable".
+- A cache that cannot be read or written (a cache file owned by another user, say) no longer breaks the page. The plugin logs a warning and builds the block from a live fetch, or shows "Status unavailable".
 
 ## [0.2.0] - 2026-11-01
 
 ### Added
 
-- Choose where the block shows ("Show the block on" in the settings): the welcome page and the project Overview (each in the left or right column), My page (also in the default layout), pages whose path is on a list (a compact form under the content, with `*` and `**` wildcards, validated on save), and a top menu link to the status page.
-- A "How to show the block on other pages" table with snippets on the settings page and in the README: the macro (also in the welcome text, news and descriptions), the My page block, the path list, the partial and its locals, and the standalone page.
+- "Show the block on" in the settings: the welcome page and the project Overview (each in the left or right column), My page (also in the default layout), pages whose path is on a list, and a top menu link to the status page.
+- Path lists take `*` and `**` wildcards and are validated on save. The block shows in a compact form under the page content.
+- A table with snippets for the other places the block can go, on the settings page and in the README: the macro (also in the welcome text, news and descriptions), the My page block, the path list, the partial and its locals, and the standalone page.
 - The partial takes a `compact` local.
 
 ### Fixed
@@ -29,14 +34,14 @@ Its name, author and version are ready to list on redmine.org, and the plugin no
 
 ## [0.1.0] - 2026-11-01
 
-First version. Redmine 7.0 and newer.
+First version. Needs Redmine 7.0 or newer.
 
 ### Added
 
-- A status block read from Uptime Kuma's metrics: curated services, down first, unknown when no monitor matches, a summary line, response times, a "Status unavailable" fallback, and Kuma asked once per cache window.
+- A status block read from Uptime Kuma's metrics. It lists the services you name, down ones first, shows unknown when no monitor matches, adds a summary line and response times, and falls back to "Status unavailable". Kuma is asked once per cache window.
 - A wiki macro (`{{service_status}}`, also `{{uptime_kuma_status}}`), a page at `/service_status`, a My page block and a partial for other plugins.
-- A settings page with validation on save: metrics URL, token variable name, allowed hosts, plain http switch, the services list, dashboard link, cache and timeout seconds, block title, response time column and who may see it.
-- The token stays in the environment: only `UPTIME_KUMA_*` names are read, it is sent only to an allowed host, over https unless the host is local or plain http is allowed, and redirects are not followed.
+- A settings page that validates on save: metrics URL, token variable name, allowed hosts, plain http switch, services list, dashboard link, cache and timeout seconds, block title, response time column and who may see the block.
+- The token stays in the environment. Only `UPTIME_KUMA_*` names are read, the token goes only to an allowed host, over https unless the host is local or plain http is allowed, and redirects are not followed.
 - Theming through `--rubylode-uptime-kuma-*` custom properties, with dark mode.
 - A demo with a fake Kuma (`ruby bin/demo up`) and README screenshots.
 

@@ -1,6 +1,6 @@
 # Rubylode Uptime Kuma
 
-A Redmine plugin (Redmine 7 and up) that shows the live status of your services, read from [Uptime Kuma](https://github.com/louislam/uptime-kuma), as a block you can put on the welcome page, on My page, on the project Overview, under any page you list, in a wiki page or on a page of its own.
+A Redmine 7 plugin that shows the live status of your services, read from [Uptime Kuma](https://github.com/louislam/uptime-kuma), as a block. It can go on the welcome page, My page, the project Overview, under any page you list, in a wiki page or on a page of its own.
 
 Only the services you list are shown, under the names you choose. Services that are down come first, a summary line says "All services up" or "1 of 5 down", and each row can show Kuma's latest response time. When Kuma cannot be reached the block says "Status unavailable" and the page around it renders as usual. Kuma is asked once per cache window, not once per page view.
 
@@ -64,9 +64,9 @@ Every place follows the permission, title and cache settings, and shows "Status 
 
 Notes:
 
-- **The welcome text** (Administration, Settings, General) is rendered with Redmine's text formatting, macros included, so `{{service_status}}` works there without any setting. This is tested.
-- **Paths** are matched against the request path: one per line, `*` stands for anything inside one path segment (`/projects/*/issues`), `**` for anything including slashes. A query string and a trailing slash are ignored. Patterns must start with `/` and are validated when you save. Sign-in, account, Administration and settings pages are never matched by a wildcard; list `/admin/*` or `/settings` itself to put the block there. Redmine has no hook above the page content, so the compact block sits under it.
-- **The top menu**: Redmine 7 has no setting for custom top menu items (Administration, Settings, Display only configures the new-item menu), so this plugin registers its own link, switched by the setting above. A theme or another plugin can also link to `/service_status` anywhere.
+- The welcome text (Administration, Settings, General) is rendered with Redmine's text formatting, macros included, so `{{service_status}}` works there without any setting. This is tested.
+- Paths are matched against the request path: one per line, `*` stands for anything inside one path segment (`/projects/*/issues`), `**` for anything including slashes. A query string and a trailing slash are ignored. Patterns must start with `/` and are validated when you save. Sign-in, account, Administration and settings pages are never matched by a wildcard; list `/admin/*` or `/settings` itself to put the block there. Redmine has no hook above the page content, so the compact block sits under it.
+- The top menu: Redmine 7 has no setting for custom top menu items (Administration, Settings, Display only configures the new-item menu), so this plugin registers its own link, switched by the setting above. A theme or another plugin can also link to `/service_status` anywhere.
 
 ![The welcome page with the block](docs/screenshots/welcome-page.png)
 
@@ -74,13 +74,13 @@ Notes:
 
 ## Security
 
-The plugin sends a secret to an address an administrator typed, so it is tightened on purpose:
+The plugin sends a secret to an address an administrator typed, so it is strict about where:
 
 - **The token is never stored.** It is read from an environment variable when the request is made. It is not in the database, not rendered in any page (the settings page only says whether the variable is set), not logged, and scrubbed from error messages.
-- **Only `UPTIME_KUMA_*` variables can be named.** The setting cannot point the plugin at `SECRET_KEY_BASE` or a database password. Another name is rejected on save, and ignored at run time (the token counts as missing and no variable is read).
-- **The token is bound to a host.** It is sent only to the host of the metrics URL, or, when you fill in Allowed hosts, only to a host on that list (the metrics URL must then be on it too). Any other destination is refused before a request is made.
-- **Redirects are never followed**, so a redirect cannot carry the credentials to another host.
-- **https is required**, except for this machine (`localhost`, `127.0.0.1`, `::1`) or when an administrator ticks "Allow plain http". Basic auth over plain http can be read by anyone on the path, so the tick is a deliberate choice for a network you trust.
+- Only `UPTIME_KUMA_*` variables can be named. The setting cannot point the plugin at `SECRET_KEY_BASE` or a database password. Another name is rejected on save, and ignored at run time (the token counts as missing and no variable is read).
+- The token is bound to a host. It is sent only to the host of the metrics URL, or, when you fill in Allowed hosts, only to a host on that list (the metrics URL must then be on it too). Any other destination is refused before a request is made.
+- Redirects are never followed, so a redirect cannot carry the credentials to another host.
+- https is required, except for this machine (`localhost`, `127.0.0.1`, `::1`) or when an administrator ticks "Allow plain http". Basic auth over plain http can be read by anyone on the path, so tick it only for a network you trust.
 - Who sees the block is a setting, and the status of services can be limited to administrators.
 
 ## Theming and dark mode
@@ -119,7 +119,7 @@ Sign in as `admin` / `admin` (sees the settings and the hints) or `sam.rivera` /
 
 ## Troubleshooting
 
-- **A cache problem never breaks the page.** If the cache store cannot be read or written (a cache file owned by another user, a full disk), the plugin logs a warning with the error class and message, treats it as an empty cache and fetches live; the page still answers.
+- A cache problem never breaks the page. If the cache store cannot be read or written (a cache file owned by another user, a full disk), the plugin logs a warning with the error class and message, treats it as an empty cache and fetches live; the page still answers.
 
 ## Tests
 
@@ -132,6 +132,8 @@ Minitest. The integration tests start the fake Kuma on a local port, including t
 
 Replacing an in-house block: see [docs/replacing-an-in-house-block.md](docs/replacing-an-in-house-block.md).
 
+Pull Requests are welcome!
+
 ## Releasing
 
 Push a `vX.Y.Z` tag whose version matches `version` in `init.rb` and has an entry in `CHANGELOG.md`. CI runs the tests, builds `redmine_rubylode_uptime_kuma-X.Y.Z.zip` and publishes the GitHub release with the changelog entry as its notes. To build a release for a tag that already exists, use Actions, release, Run workflow.
@@ -140,4 +142,10 @@ The text to paste when listing the plugin on www.redmine.org, and how to read th
 
 ## License
 
-GNU General Public License, version 2 or later. See `LICENSE`.
+GPL v2 or later, the same as Redmine. See `LICENSE`.
+
+Copyright (C) 2026  Nick Gorbikoff. Each Ruby file carries the same short notice Redmine puts on its own.
+
+The fallback colours in the stylesheet are [Open Color](https://github.com/yeun/open-color) values (MIT). The notice is in `NOTICE.md`.
+
+No warranty, as the GPL says. The plugin only reads from Kuma and stores no token, but try it on a copy of your tracker first.

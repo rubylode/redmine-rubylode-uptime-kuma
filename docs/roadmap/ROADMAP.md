@@ -13,7 +13,6 @@ Show the live status of a curated list of services inside Redmine, from Uptime K
 
 ## Ideas, not decided
 
-- A top-menu entry for the status page, switchable in the settings.
 - Several Kuma instances or several named lists.
 - Translations beyond English.
 - Uptime percentages or a short history, if asked for. Out of scope so far: alerts and a public status page.
