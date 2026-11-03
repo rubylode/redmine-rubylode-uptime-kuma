@@ -4,6 +4,18 @@ All notable changes to this plugin. The format follows [Keep a Changelog](https:
 
 ## [Unreleased]
 
+## [1.0.1] - 2026-11-03
+
+### Added
+
+- The plugin has a Rubylode thumbnail, shown at the top of the README.
+
+### Changed
+
+- The README is plainer and has a licence section.
+- The changelog entries are worded more plainly.
+- The release job writes the checksum file inside the build step.
+
 ## [1.0.0] - 2026-11-02
 
 First stable release. A live service status block read from Uptime Kuma, as a wiki macro, a page, a My page block and a partial, with the places chosen in the settings.
