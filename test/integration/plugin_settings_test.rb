@@ -25,7 +25,7 @@ class RubylodeUptimeKuma::PluginSettingsTest < Redmine::IntegrationTest
   SETTINGS_PATH = "/settings/plugin/redmine_rubylode_uptime_kuma".freeze
 
   GOOD_SETTINGS = {
-    "metrics_url" => "https://uptime.example.com/metrics",
+    "base_url" => "https://uptime.example.com",
     "token_environment_variable" => "UPTIME_KUMA_MY_TOKEN",
     "services" => "Website | https://www.example.com | The site | Website homepage\nWiki | https://wiki.example.com | Notes | Wiki",
     "dashboard_url" => "https://uptime.example.com/dashboard",
@@ -36,7 +36,7 @@ class RubylodeUptimeKuma::PluginSettingsTest < Redmine::IntegrationTest
   }.freeze
 
   setup do
-    Setting.send(:"plugin_#{PLUGIN_ID}=", RedmineRubylodeUptimeKuma::Defaults::SETTINGS.dup)
+    Setting.send(:"plugin_#{PLUGIN_ID}=", RubylodeUptimeKuma::Settings::DEFAULTS.dup)
   end
 
   test "the plugin is registered and its settings page opens with every field" do
@@ -44,7 +44,7 @@ class RubylodeUptimeKuma::PluginSettingsTest < Redmine::IntegrationTest
     get SETTINGS_PATH
 
     assert_response :success
-    %w[metrics_url token_environment_variable allowed_hosts allow_plain_http services dashboard_url block_title visibility show_response_time
+    %w[base_url token_environment_variable allowed_hosts allow_plain_http services dashboard_url block_title visibility show_response_time
        show_on_welcome_page welcome_page_column
        cache_seconds failure_cache_seconds timeout_seconds].each do |field|
       assert_select "[name=?]", "settings[#{field}]"
@@ -58,13 +58,13 @@ class RubylodeUptimeKuma::PluginSettingsTest < Redmine::IntegrationTest
 
     assert_redirected_to SETTINGS_PATH
     saved = Setting.send(:"plugin_#{PLUGIN_ID}")
-    assert_equal "https://uptime.example.com/metrics", saved["metrics_url"]
+    assert_equal "https://uptime.example.com", saved["base_url"]
     assert_equal "UPTIME_KUMA_MY_TOKEN", saved["token_environment_variable"]
     assert_equal "admins", saved["visibility"]
-    assert RubylodeUptimeKuma::Configuration.current.show_on_welcome_page?
-    assert_equal "left", RubylodeUptimeKuma::Configuration.current.welcome_page_column
-    assert_equal 2, RubylodeUptimeKuma::Configuration.current.services.size
-    refute RubylodeUptimeKuma::Configuration.current.show_response_time?
+    assert RubylodeUptimeKuma::Settings.current.show_on_welcome_page?
+    assert_equal "left", RubylodeUptimeKuma::Settings.current.welcome_page_column
+    assert_equal 2, RubylodeUptimeKuma::Settings.current.services.size
+    refute RubylodeUptimeKuma::Settings.current.show_response_time?
   end
 
   test "a bad service line shows the line error, keeps what was typed and saves nothing" do
@@ -75,12 +75,12 @@ class RubylodeUptimeKuma::PluginSettingsTest < Redmine::IntegrationTest
     assert_response :unprocessable_entity
     assert_select "#errorExplanation li", text: /line 2/
     assert_select "textarea[name=?]", "settings[services]", text: /broken line here/
-    assert_equal "", Setting.send(:"plugin_#{PLUGIN_ID}")["metrics_url"], "nothing was saved"
+    assert_equal "", Setting.send(:"plugin_#{PLUGIN_ID}")["base_url"], "nothing was saved"
   end
 
   test "an invalid metrics url and an invalid variable name are refused" do
     log_user("admin", "admin")
-    post SETTINGS_PATH, params: { settings: GOOD_SETTINGS.merge("metrics_url" => "ftp://nope", "token_environment_variable" => "not valid!") }
+    post SETTINGS_PATH, params: { settings: GOOD_SETTINGS.merge("base_url" => "ftp://nope", "token_environment_variable" => "not valid!") }
 
     assert_response :unprocessable_entity
     assert_select "#errorExplanation li", 2
@@ -93,7 +93,7 @@ test "the placements are saved, with the path list" do
                                                                  "matching_page_paths" => "/issues\n/projects/*/issues", "show_in_top_menu" => "1") }
   
     assert_redirected_to SETTINGS_PATH
-    saved = RubylodeUptimeKuma::Configuration.current
+    saved = RubylodeUptimeKuma::Settings.current
     assert saved.show_on_my_page?
     assert_equal "left", saved.project_overview_column
     assert_equal ["/issues", "/projects/*/issues"], saved.matching_page_paths
@@ -107,7 +107,7 @@ test "the placements are saved, with the path list" do
     assert_response :unprocessable_entity
     assert_select "#errorExplanation li", text: /Paths, line 2/
     assert_select "textarea[name=?]", "settings[matching_page_paths]", text: %r{https://example.com/x}
-    assert_equal "", Setting.send(:"plugin_#{PLUGIN_ID}")["metrics_url"]
+    assert_equal "", Setting.send(:"plugin_#{PLUGIN_ID}")["base_url"]
   end
   
   test "the settings page explains how to show the block elsewhere, with the macro and the partial name" do
@@ -133,12 +133,12 @@ test "the placements are saved, with the path list" do
       assert_response :unprocessable_entity
       assert_select "#errorExplanation li", text: /UPTIME_KUMA_/
     end
-    assert_equal "", Setting.send(:"plugin_#{PLUGIN_ID}")["metrics_url"]
+    assert_equal "", Setting.send(:"plugin_#{PLUGIN_ID}")["base_url"]
   end
 
   test "plain http to an outside host is refused at save until the setting is ticked" do
     log_user("admin", "admin")
-    plain = GOOD_SETTINGS.merge("metrics_url" => "http://uptime.example.com/metrics")
+    plain = GOOD_SETTINGS.merge("base_url" => "http://uptime.example.com")
 
     post SETTINGS_PATH, params: { settings: plain }
     assert_response :unprocessable_entity
@@ -154,11 +154,11 @@ test "the placements are saved, with the path list" do
     assert_response :forbidden
     post SETTINGS_PATH, params: { settings: GOOD_SETTINGS }
     assert_response :forbidden
-    assert_equal "", Setting.send(:"plugin_#{PLUGIN_ID}")["metrics_url"]
+    assert_equal "", Setting.send(:"plugin_#{PLUGIN_ID}")["base_url"]
   end
 
   test "settings of other plugins are not checked by this plugin" do
-    patch_applied = SettingsController.include?(RedmineRubylodeUptimeKuma::SettingsControllerPatch)
+    patch_applied = SettingsController.include?(RubylodeUptimeKuma::SettingsControllerPatch)
 
     assert patch_applied
     log_user("admin", "admin")

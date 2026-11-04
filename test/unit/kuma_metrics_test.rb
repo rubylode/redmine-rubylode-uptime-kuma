@@ -150,11 +150,11 @@ class RubylodeUptimeKuma::KumaMetricsOverHttpTest < ActiveSupport::TestCase
     assert_equal "x", allowed.call
   end
 
-  test "from_configuration passes the allowed hosts, so a listed other host blocks the metrics url host" do
-    configuration = RubylodeUptimeKuma::Configuration.new("metrics_url" => @server.metrics_url, "allowed_hosts" => "kuma.example.com")
+  test "from_settings passes the allowed hosts, so a listed other host blocks the metrics url host" do
+    settings = RubylodeUptimeKuma::Settings.new("base_url" => @server.base_url, "allowed_hosts" => "kuma.example.com")
     ENV["UPTIME_KUMA_API_TOKEN"] = TOKEN
 
-    assert_raises(RubylodeUptimeKuma::KumaMetrics::Unavailable) { RubylodeUptimeKuma::KumaMetrics.from_configuration(configuration).call }
+    assert_raises(RubylodeUptimeKuma::KumaMetrics::Unavailable) { RubylodeUptimeKuma::KumaMetrics.from_settings(settings).call }
     assert_equal 0, @server.request_count
   ensure
     ENV.delete("UPTIME_KUMA_API_TOKEN")
@@ -163,20 +163,20 @@ class RubylodeUptimeKuma::KumaMetricsOverHttpTest < ActiveSupport::TestCase
   test "a variable outside the UPTIME_KUMA_ family is never read: the request is not made" do
     original = ENV["SECRET_KEY_BASE"]
     ENV["SECRET_KEY_BASE"] = TOKEN
-    configuration = RubylodeUptimeKuma::Configuration.new("metrics_url" => @server.metrics_url, "token_environment_variable" => "SECRET_KEY_BASE")
+    settings = RubylodeUptimeKuma::Settings.new("base_url" => @server.base_url, "token_environment_variable" => "SECRET_KEY_BASE")
 
-    assert_raises(RubylodeUptimeKuma::KumaMetrics::Unavailable) { RubylodeUptimeKuma::KumaMetrics.from_configuration(configuration).call }
+    assert_raises(RubylodeUptimeKuma::KumaMetrics::Unavailable) { RubylodeUptimeKuma::KumaMetrics.from_settings(settings).call }
     assert_equal 0, @server.request_count
     assert_empty @server.authorization_headers
   ensure
     original ? ENV["SECRET_KEY_BASE"] = original : ENV.delete("SECRET_KEY_BASE")
   end
 
-  test "from_configuration reads the token from the environment variable named in the settings" do
-    configuration = RubylodeUptimeKuma::Configuration.new("metrics_url" => @server.metrics_url, "token_environment_variable" => "UPTIME_KUMA_TEST_TOKEN")
+  test "from_settings reads the token from the environment variable named in the settings" do
+    settings = RubylodeUptimeKuma::Settings.new("base_url" => @server.base_url, "token_environment_variable" => "UPTIME_KUMA_TEST_TOKEN")
     ENV["UPTIME_KUMA_TEST_TOKEN"] = TOKEN
 
-    assert_includes RubylodeUptimeKuma::KumaMetrics.from_configuration(configuration).call, "monitor_status"
+    assert_includes RubylodeUptimeKuma::KumaMetrics.from_settings(settings).call, "monitor_status"
   ensure
     ENV.delete("UPTIME_KUMA_TEST_TOKEN")
   end

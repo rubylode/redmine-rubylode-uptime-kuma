@@ -16,7 +16,6 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 require "redmine"
-require_relative "lib/redmine_rubylode_uptime_kuma/defaults"
 
 Redmine::Plugin.register :redmine_rubylode_uptime_kuma do
   name "Rubylode Uptime Kuma"
@@ -30,24 +29,21 @@ Redmine::Plugin.register :redmine_rubylode_uptime_kuma do
   menu :top_menu, :rubylode_service_status, { controller: "rubylode_service_status", action: "show" },
        caption: :"rubylode_uptime_kuma.page_title",
        if: proc {
-         configuration = RubylodeUptimeKuma::Configuration.current
-         configuration.show_in_top_menu? && configuration.configured? && configuration.visible_to?(User.current)
+         settings = RubylodeUptimeKuma::Settings.current
+         settings.show_in_top_menu? && settings.configured? && settings.visible_to?(User.current)
        }
 
-  settings default: RedmineRubylodeUptimeKuma::Defaults::SETTINGS, partial: "settings/rubylode_uptime_kuma"
+  settings default: RubylodeUptimeKuma::Settings::DEFAULTS, partial: "settings/rubylode_uptime_kuma"
 end
 
-require_relative "lib/redmine_rubylode_uptime_kuma/macros"
-RedmineRubylodeUptimeKuma::Macros.register
-require_relative "lib/redmine_rubylode_uptime_kuma/default_layout_patch"
-Redmine::MyPage.singleton_class.prepend RedmineRubylodeUptimeKuma::DefaultLayoutPatch unless Redmine::MyPage.singleton_class.include?(RedmineRubylodeUptimeKuma::DefaultLayoutPatch)
-require_relative "lib/redmine_rubylode_uptime_kuma/hooks"
-require_relative "lib/redmine_rubylode_uptime_kuma/settings_controller_patch"
+RubylodeUptimeKuma::Hooks # loaded so Redmine registers the view hooks
+RubylodeUptimeKuma::Macros.register
+Redmine::MyPage.singleton_class.prepend RubylodeUptimeKuma::DefaultLayoutPatch unless Redmine::MyPage.singleton_class.include?(RubylodeUptimeKuma::DefaultLayoutPatch)
 
 # Plugins load after the boot-time prepare callbacks have run, so apply the patch now and again after each code reload.
 apply_settings_controller_patch = lambda do
-  unless SettingsController.include?(RedmineRubylodeUptimeKuma::SettingsControllerPatch)
-    SettingsController.prepend RedmineRubylodeUptimeKuma::SettingsControllerPatch
+  unless SettingsController.include?(RubylodeUptimeKuma::SettingsControllerPatch)
+    SettingsController.prepend RubylodeUptimeKuma::SettingsControllerPatch
   end
 end
 apply_settings_controller_patch.call

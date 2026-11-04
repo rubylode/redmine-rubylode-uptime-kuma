@@ -31,7 +31,7 @@ module RubylodeUptimeKuma
 
     def errors
       messages = []
-      messages << t("metrics_url_invalid") unless blank_or_web_address?("metrics_url")
+      messages << t("base_url_invalid") unless blank_or_web_address?("base_url")
       messages << t("dashboard_url_invalid") unless blank_or_web_address?("dashboard_url")
       messages << t("environment_variable_invalid") unless environment_variable_valid?
       messages.concat(destination_errors)
@@ -62,15 +62,15 @@ module RubylodeUptimeKuma
 
     def environment_variable_valid?
       name = @settings["token_environment_variable"].to_s.strip
-      name.empty? || name.match?(Configuration::ENVIRONMENT_VARIABLE_PATTERN)
+      name.empty? || name.match?(Settings::ENVIRONMENT_VARIABLE_PATTERN)
     end
 
     def destination_errors
       messages = []
       hosts = @settings["allowed_hosts"].to_s.downcase.split(/[\s,;]+/).reject(&:empty?)
-      bad_hosts = hosts.reject { |host| host.match?(Configuration::HOST_PATTERN) }
+      bad_hosts = hosts.reject { |host| host.match?(Settings::HOST_PATTERN) }
       messages << t("allowed_hosts_invalid", hosts: bad_hosts.join(", ")) if bad_hosts.any?
-      uri = web_uri(@settings["metrics_url"].to_s.strip)
+      uri = web_uri(@settings["base_url"].to_s.strip)
       return messages unless uri
 
       host = uri.host.to_s.downcase
@@ -91,7 +91,7 @@ module RubylodeUptimeKuma
 
     def columns_valid?
       %w[welcome_page_column project_overview_column].all? do |key|
-        !@settings.key?(key) || Configuration::COLUMNS.include?(@settings[key].to_s)
+        !@settings.key?(key) || Settings::COLUMNS.include?(@settings[key].to_s)
       end
     end
 
@@ -106,7 +106,7 @@ module RubylodeUptimeKuma
     end
 
     def visibility_valid?
-      !@settings.key?("visibility") || Configuration::VISIBILITIES.include?(@settings["visibility"].to_s)
+      !@settings.key?("visibility") || Settings::VISIBILITIES.include?(@settings["visibility"].to_s)
     end
 
     def number_errors

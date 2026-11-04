@@ -21,12 +21,12 @@ class RubylodeServiceStatusController < ApplicationController
   before_action :require_permission_to_see_status
 
   def show
-    @configuration = RubylodeUptimeKuma::Configuration.current
+    @settings = RubylodeUptimeKuma::Settings.current
   end
 
   private
 
   def require_permission_to_see_status
-    deny_access unless RubylodeUptimeKuma::Configuration.current.visible_to?(User.current)
+    deny_access unless RubylodeUptimeKuma::Settings.current.visible_to?(User.current)
   end
 end

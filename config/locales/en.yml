@@ -15,7 +15,7 @@ en:
       status: Status
       response_time: Response time
     hints:
-      not_configured: "Service status is not set up yet. Add the Kuma metrics URL and the services list in the plugin settings."
+      not_configured: "Service status is not set up yet. Add the Uptime Kuma address and the services list in the plugin settings."
       not_configured_link: Open the settings
       reason: "Why: %{reason}"
     page_title: Service status
@@ -24,11 +24,11 @@ en:
       line_name_missing: the name is empty
       line_url_invalid: "%{url} is not a web address (use http:// or https://)"
       line_prefix: "Services, line %{line_number}: %{message}"
-      metrics_url_invalid: The Kuma metrics URL must start with http:// or https://
+      base_url_invalid: The Uptime Kuma address must start with http:// or https://
       dashboard_url_invalid: The dashboard link must start with http:// or https://
       environment_variable_invalid: "The token variable name must start with UPTIME_KUMA_ and use only capital letters, digits and underscores, so the plugin can never read another secret"
       allowed_hosts_invalid: "Allowed hosts must be plain host names, separated by spaces or commas (not: %{hosts})"
-      host_not_in_allowed_hosts: "The metrics URL host %{host} is not in the allowed hosts"
+      host_not_in_allowed_hosts: "The Uptime Kuma address host %{host} is not in the allowed hosts"
       host_not_allowed: "The token is not sent to %{host}: it is not an allowed host"
       plain_http_refused: "The token is not sent over plain http. Use https, or tick the allow plain http setting for an internal network"
       kuma_redirect: Kuma redirected the request; redirects are never followed with the token
@@ -48,8 +48,8 @@ en:
       kuma_unreachable: "Kuma could not be reached (%{error_class})"
       kuma_did_not_answer: Kuma did not answer
     settings:
-      metrics_url: Kuma metrics URL
-      metrics_url_hint: "For example https://uptime.example.com/metrics. Empty means the block is not shown to anyone but administrators, who get a hint."
+      base_url: Uptime Kuma address
+      base_url_hint: "For example https://uptime.example.com. Empty means the block is not shown to anyone but administrators, who get a hint."
       token_environment_variable: Name of the token environment variable
       token_environment_variable_hint: "The token itself is never saved here: put it in this environment variable before Redmine starts. The name must start with UPTIME_KUMA_. It is used as the password of the metrics request."
       token_is_set: "set in the environment"

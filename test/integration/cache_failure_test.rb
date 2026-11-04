@@ -33,7 +33,7 @@ class RubylodeUptimeKuma::CacheFailureTest < Redmine::IntegrationTest
     use_memory_cache
     @server = FakeKumaServer.new(token: TOKEN).start
     ENV[TOKEN_VARIABLE] = TOKEN
-    configure_plugin("metrics_url" => @server.metrics_url, "token_environment_variable" => TOKEN_VARIABLE,
+    configure_plugin("base_url" => @server.base_url, "token_environment_variable" => TOKEN_VARIABLE,
                      "show_on_welcome_page" => "1")
   end
 

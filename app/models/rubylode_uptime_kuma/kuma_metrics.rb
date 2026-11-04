@@ -25,13 +25,13 @@ module RubylodeUptimeKuma
 
     LOOPBACK_HOSTS = %w[localhost 127.0.0.1 ::1 [::1]].freeze
 
-    def self.from_configuration(configuration)
-      new(url: configuration.metrics_url,
-          token: configuration.token,
-          timeout_seconds: configuration.timeout_seconds,
-          token_environment_variable: configuration.token_environment_variable,
-          allowed_hosts: configuration.allowed_hosts,
-          allow_plain_http: configuration.allow_plain_http?)
+    def self.from_settings(settings)
+      new(url: settings.metrics_url,
+          token: settings.token,
+          timeout_seconds: settings.timeout_seconds,
+          token_environment_variable: settings.token_environment_variable,
+          allowed_hosts: settings.allowed_hosts,
+          allow_plain_http: settings.allow_plain_http?)
     end
 
     def initialize(url:, token:, timeout_seconds: 2, token_environment_variable: nil, allowed_hosts: [], allow_plain_http: false, http_client: nil)

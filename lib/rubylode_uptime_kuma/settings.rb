@@ -18,23 +18,59 @@
 module RubylodeUptimeKuma
   # The plugin's settings, read with their defaults and clamped to sensible values. The token is not one of them:
   # only the NAME of the environment variable that holds it is a setting.
-  class Configuration
+  class Settings
+    PLUGIN_ID = :redmine_rubylode_uptime_kuma
+
     VISIBILITIES = %w[logged_in admins].freeze
     # The token variable must live in this family, so the setting can never point the plugin at Redmine's own secrets
     # (SECRET_KEY_BASE, a database password, ...) and send them to the metrics address.
     ENVIRONMENT_VARIABLE_PATTERN = /\AUPTIME_KUMA_[A-Z0-9_]*\z/
     HOST_PATTERN = /\A[a-z0-9]([a-z0-9.\-]*[a-z0-9])?\z/
 
+    # What a fresh install starts with. Everything here is a plugin setting except the token, which is only ever read
+    # from the environment variable named by "token_environment_variable".
+    DEFAULTS = {
+      "base_url" => "",
+      "token_environment_variable" => "UPTIME_KUMA_API_TOKEN",
+      "allowed_hosts" => "",
+      "allow_plain_http" => "0",
+      "services" => "",
+      "dashboard_url" => "",
+      "cache_seconds" => "60",
+      "failure_cache_seconds" => "30",
+      "timeout_seconds" => "2",
+      "show_response_time" => "1",
+      "block_title" => "Services",
+      "show_on_welcome_page" => "0",
+      "welcome_page_column" => "right",
+      "show_on_my_page" => "0",
+      "show_on_project_overview" => "0",
+      "project_overview_column" => "right",
+      "show_on_matching_pages" => "0",
+      "matching_page_paths" => "",
+      "show_in_top_menu" => "0",
+      "visibility" => "logged_in"
+    }.freeze
+
     def self.current
-      new(Setting.send(:"plugin_#{RedmineRubylodeUptimeKuma::PLUGIN_ID}"))
+      new(Setting.send(:"plugin_#{PLUGIN_ID}"))
     end
 
     def initialize(raw_settings = {})
-      @settings = RedmineRubylodeUptimeKuma::Defaults::SETTINGS.merge((raw_settings || {}).to_h.stringify_keys.compact)
+      @settings = DEFAULTS.merge((raw_settings || {}).to_h.stringify_keys.compact)
     end
 
+    # The address of Uptime Kuma, without /metrics.
+    def base_url
+      @settings["base_url"].to_s.strip
+    end
+
+    # Where the plugin asks: the address plus /metrics, unless the saved address already ends that way.
     def metrics_url
-      @settings["metrics_url"].to_s.strip
+      return "" if base_url.empty?
+
+      address = base_url.chomp("/")
+      address.end_with?("/metrics") ? address : "#{address}/metrics"
     end
 
     # Nil when the configured name is not allowed: the token is then treated as missing and no variable is read.
@@ -87,7 +123,7 @@ module RubylodeUptimeKuma
 
     def block_title
       title = @settings["block_title"].to_s.strip
-      title.empty? ? RedmineRubylodeUptimeKuma::Defaults::SETTINGS["block_title"] : title
+      title.empty? ? DEFAULTS["block_title"] : title
     end
 
     COLUMNS = %w[left right].freeze
@@ -152,7 +188,7 @@ module RubylodeUptimeKuma
       value = Integer(@settings[key].to_s.strip, 10)
       [value, minimum].max
     rescue ArgumentError
-      Integer(RedmineRubylodeUptimeKuma::Defaults::SETTINGS[key], 10)
+      Integer(DEFAULTS[key], 10)
     end
   end
 end

@@ -117,7 +117,7 @@ test "the welcome text is rendered with Redmine's text formatting, so the macro 
   end
 
   test "not configured: administrators see the hint and everyone else sees nothing" do
-    configure_plugin("show_on_welcome_page" => "1", "metrics_url" => "")
+    configure_plugin("show_on_welcome_page" => "1", "base_url" => "")
 
     log_user("admin", "admin")
     get "/"
@@ -144,7 +144,7 @@ class RubylodeUptimeKuma::WelcomePageKumaTest < Redmine::IntegrationTest
     use_memory_cache
     @server = FakeKumaServer.new(token: TOKEN).start
     ENV[TOKEN_VARIABLE] = TOKEN
-    configure_plugin("metrics_url" => @server.metrics_url, "token_environment_variable" => TOKEN_VARIABLE,
+    configure_plugin("base_url" => @server.base_url, "token_environment_variable" => TOKEN_VARIABLE,
                      "show_on_welcome_page" => "1")
     @log_path = Rails.root.join("log", "#{Rails.env}.log")
     @log_offset = File.exist?(@log_path) ? File.size(@log_path) : 0

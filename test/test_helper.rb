@@ -21,7 +21,7 @@ require "stringio"
 require_relative "support/fake_kuma_server"
 
 module RubylodeUptimeKumaTestHelpers
-  PLUGIN_ID = RedmineRubylodeUptimeKuma::PLUGIN_ID
+  PLUGIN_ID = RubylodeUptimeKuma::Settings::PLUGIN_ID
 
   SAMPLE_SERVICES = <<~TEXT.freeze
     Website | https://www.example.com | The public site | Website homepage
@@ -36,8 +36,8 @@ module RubylodeUptimeKumaTestHelpers
   end
 
   def configure_plugin(overrides = {})
-    settings = RedmineRubylodeUptimeKuma::Defaults::SETTINGS.merge(
-      "metrics_url" => "https://kuma.example.com/metrics",
+    settings = RubylodeUptimeKuma::Settings::DEFAULTS.merge(
+      "base_url" => "https://kuma.example.com",
       "services" => SAMPLE_SERVICES,
       "dashboard_url" => "https://kuma.example.com/dashboard"
     ).merge(overrides.transform_keys(&:to_s))

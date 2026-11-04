@@ -38,7 +38,7 @@ admin.save!(validate: false)
 
 Setting.default_language = "en"
 Setting.send(:"plugin_redmine_rubylode_uptime_kuma=",
-             RedmineRubylodeUptimeKuma::Defaults::SETTINGS.merge(
+             RubylodeUptimeKuma::Settings::DEFAULTS.merge(
                "metrics_url" => "http://fake_kuma:9100/metrics",
                "allow_plain_http" => "1", # the fake Kuma is on the compose network over plain http
                "services" => DEMO_SERVICES,

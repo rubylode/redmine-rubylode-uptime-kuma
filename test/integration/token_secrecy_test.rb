@@ -31,7 +31,7 @@ class RubylodeUptimeKuma::TokenSecrecyTest < Redmine::IntegrationTest
     use_memory_cache
     @server = FakeKumaServer.new(token: SAMPLE_TOKEN).start
     ENV[TOKEN_VARIABLE] = SAMPLE_TOKEN
-    configure_plugin("metrics_url" => @server.metrics_url, "token_environment_variable" => TOKEN_VARIABLE, "cache_seconds" => "60")
+    configure_plugin("base_url" => @server.base_url, "token_environment_variable" => TOKEN_VARIABLE, "cache_seconds" => "60")
     @log_path = Rails.root.join("log", "#{Rails.env}.log")
     @log_offset = File.exist?(@log_path) ? File.size(@log_path) : 0
   end

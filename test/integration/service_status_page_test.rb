@@ -139,7 +139,7 @@ class RubylodeUptimeKuma::ServiceStatusPageTest < Redmine::IntegrationTest
 
   test "a missing token shows status unavailable and the page renders" do
     ENV.delete("UPTIME_KUMA_API_TOKEN")
-    configure_plugin("metrics_url" => "http://127.0.0.1:9/metrics")
+    configure_plugin("base_url" => "http://127.0.0.1:9")
 
     log_user("jsmith", "jsmith")
     get "/service_status"
@@ -149,7 +149,7 @@ class RubylodeUptimeKuma::ServiceStatusPageTest < Redmine::IntegrationTest
   end
 
   test "not configured: administrators get a hint with a link to the settings, everyone else gets an empty page" do
-    configure_plugin("metrics_url" => "")
+    configure_plugin("base_url" => "")
 
     log_user("admin", "admin")
     get "/service_status"

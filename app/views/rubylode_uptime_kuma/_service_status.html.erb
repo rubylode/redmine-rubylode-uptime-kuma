@@ -1,16 +1,16 @@
 <%# The status block. Other plugins can render it: render partial: "rubylode_uptime_kuma/service_status"
     Optional locals: title (replaces the block title), show_title (false hides it), compact (one line: the summary and what is down). It draws nothing for a person the
     settings do not allow, and a hint for administrators while the plugin is not set up. %>
-<% configuration = RubylodeUptimeKuma::Configuration.current %>
-<% if configuration.visible_to?(User.current) %>
+<% settings = RubylodeUptimeKuma::Settings.current %>
+<% if settings.visible_to?(User.current) %>
   <% stylesheet = stylesheet_link_tag("rubylode_uptime_kuma", plugin: "redmine_rubylode_uptime_kuma") %>
   <%# A full page takes the stylesheet in its head; an AJAX render (the wiki preview) has no head, so it carries the link itself. %>
   <% if request.xhr? %><%= stylesheet %><% else %><% content_for :header_tags, stylesheet %><% end %>
-  <% block_title = local_assigns[:title].presence || configuration.block_title %>
+  <% block_title = local_assigns[:title].presence || settings.block_title %>
   <% show_title = local_assigns.fetch(:show_title, true) %>
-  <% if configuration.configured? %>
-    <% report = RubylodeUptimeKuma::ServiceStatus.safe_report(configuration) %>
-    <% show_response_time = configuration.show_response_time? %>
+  <% if settings.configured? %>
+    <% report = RubylodeUptimeKuma::ServiceStatus.safe_report(settings) %>
+    <% show_response_time = settings.show_response_time? %>
 <% compact = local_assigns.fetch(:compact, false) %>
 <div class="rubylode-service-status<%= " is-compact" if compact %>">
   <% if show_title && !compact %><h3 class="rubylode-service-status-title"><%= block_title %></h3><% end %>
@@ -43,7 +43,7 @@
                   <td class="rubylode-service-status-response-time">
                     <% if service.response_time_milliseconds %>
                       <% label = "#{service.response_time_milliseconds} ms" %>
-                      <%= configuration.dashboard_url.empty? ? label : link_to(label, configuration.dashboard_url) %>
+                      <%= settings.dashboard_url.empty? ? label : link_to(label, settings.dashboard_url) %>
                     <% else %>
                       <%= l("rubylode_uptime_kuma.status.no_response_time") %>
                     <% end %>
@@ -60,7 +60,7 @@
       <% if show_title %><h3 class="rubylode-service-status-title"><%= block_title %></h3><% end %>
       <p class="rubylode-service-status-hint">
         <%= l("rubylode_uptime_kuma.hints.not_configured") %>
-        <%= link_to l("rubylode_uptime_kuma.hints.not_configured_link"), plugin_settings_path(RedmineRubylodeUptimeKuma::PLUGIN_ID.to_s) %>
+        <%= link_to l("rubylode_uptime_kuma.hints.not_configured_link"), plugin_settings_path(RubylodeUptimeKuma::Settings::PLUGIN_ID.to_s) %>
       </p>
     </div>
   <% end %>

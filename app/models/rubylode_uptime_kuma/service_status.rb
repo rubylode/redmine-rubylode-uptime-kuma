@@ -49,20 +49,20 @@ module RubylodeUptimeKuma
       end
 
       # The report for a page. Whatever goes wrong while building it, the page gets a "status unavailable" report and never an error.
-      def safe_report(configuration = Configuration.current)
-        current(configuration).report
+      def safe_report(settings = Configuration.current)
+        current(settings).report
       rescue StandardError => error
         Rails.logger.warn("Rubylode Uptime Kuma: could not build the status block: #{error.class}: #{error.message}")
         Report.new([], I18n.t("rubylode_uptime_kuma.status.unavailable"), true, error.class.name)
       end
 
-      def current(configuration = Configuration.current)
-        new(services: configuration.services,
-            fetch_metrics: -> { KumaMetrics.from_configuration(configuration).call },
+      def current(settings = Configuration.current)
+        new(services: settings.services,
+            fetch_metrics: -> { KumaMetrics.from_settings(settings).call },
             cache: cache,
-            cache_key: cache_key_for(configuration.metrics_url),
-            cache_seconds: configuration.cache_seconds,
-            failure_seconds: configuration.failure_cache_seconds)
+            cache_key: cache_key_for(settings.metrics_url),
+            cache_seconds: settings.cache_seconds,
+            failure_seconds: settings.failure_cache_seconds)
       end
     end
 

@@ -19,7 +19,7 @@ require_relative "../test_helper"
 
 class RubylodeUptimeKuma::SettingsValidatorTest < ActiveSupport::TestCase
   GOOD = {
-    "metrics_url" => "https://kuma.example.com/metrics",
+    "base_url" => "https://kuma.example.com",
     "token_environment_variable" => "UPTIME_KUMA_API_TOKEN",
     "services" => "Website | https://www.example.com | The site | Website homepage",
     "dashboard_url" => "https://kuma.example.com/dashboard",
@@ -36,11 +36,11 @@ class RubylodeUptimeKuma::SettingsValidatorTest < ActiveSupport::TestCase
   end
 
   test "empty optional values are fine" do
-    assert_empty errors_for("metrics_url" => "", "dashboard_url" => "", "services" => "", "cache_seconds" => "")
+    assert_empty errors_for("base_url" => "", "dashboard_url" => "", "services" => "", "cache_seconds" => "")
   end
 
   test "the metrics url and the dashboard link must be web addresses" do
-    assert_equal 1, errors_for("metrics_url" => "kuma.example.com/metrics").size
+    assert_equal 1, errors_for("base_url" => "kuma.example.com").size
     assert_equal 1, errors_for("dashboard_url" => "javascript:alert(1)").size
   end
 
@@ -60,10 +60,10 @@ class RubylodeUptimeKuma::SettingsValidatorTest < ActiveSupport::TestCase
   end
 
   test "plain http to a host that is not this machine needs the explicit setting" do
-    assert_equal 1, errors_for("metrics_url" => "http://kuma.internal.example.com/metrics").size
-    assert_empty errors_for("metrics_url" => "http://kuma.internal.example.com/metrics", "allow_plain_http" => "1")
-    assert_empty errors_for("metrics_url" => "http://127.0.0.1:3001/metrics")
-    assert_empty errors_for("metrics_url" => "http://localhost:3001/metrics")
+    assert_equal 1, errors_for("base_url" => "http://kuma.internal.example.com").size
+    assert_empty errors_for("base_url" => "http://kuma.internal.example.com", "allow_plain_http" => "1")
+    assert_empty errors_for("base_url" => "http://127.0.0.1:3001")
+    assert_empty errors_for("base_url" => "http://localhost:3001")
   end
 
   test "when allowed hosts are listed the metrics url host must be one of them, and each must be a plain host name" do

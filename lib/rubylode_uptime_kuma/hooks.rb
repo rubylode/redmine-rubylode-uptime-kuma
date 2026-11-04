@@ -15,7 +15,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-module RedmineRubylodeUptimeKuma
+module RubylodeUptimeKuma
   # Puts the status block on the welcome (Home) page, the project Overview and the pages on the path list, as the settings
   # ask. The block is the same partial as everywhere else, so permission, caching and the fallback are the same too.
   class Hooks < Redmine::Hook::ViewListener
@@ -52,15 +52,15 @@ module RedmineRubylodeUptimeKuma
     private
 
     def on_listed_page?(context)
-      configuration = RubylodeUptimeKuma::Configuration.current
-      return false unless configuration.show_on_matching_pages? && configuration.visible_to?(User.current)
+      settings = RubylodeUptimeKuma::Settings.current
+      return false unless settings.show_on_matching_pages? && settings.visible_to?(User.current)
 
-      RubylodeUptimeKuma::PathMatcher.new(configuration.matching_page_paths).match?(context[:request].path)
+      RubylodeUptimeKuma::PathMatcher.new(settings.matching_page_paths).match?(context[:request].path)
     end
 
     def render_in_column(context, column, enabled_method, column_method)
-      configuration = RubylodeUptimeKuma::Configuration.current
-      return "" unless configuration.public_send(enabled_method) && configuration.public_send(column_method) == column
+      settings = RubylodeUptimeKuma::Settings.current
+      return "" unless settings.public_send(enabled_method) && settings.public_send(column_method) == column
 
       context[:hook_caller].render(partial: "rubylode_uptime_kuma/service_status")
     end

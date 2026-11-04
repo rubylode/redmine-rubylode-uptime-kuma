@@ -211,11 +211,11 @@ class RubylodeUptimeKuma::ServiceStatusResilienceTest < ActiveSupport::TestCase
   end
 
   test "safe_report answers status unavailable and logs the class when building the report raises" do
-    configuration = RubylodeUptimeKuma::Configuration.current
+    settings = RubylodeUptimeKuma::Settings.current
     report = nil
     log = captured_log do
       replacing_method(RubylodeUptimeKuma::ServiceStatus, :current, ->(*) { raise ArgumentError, "boom" }) do
-        report = RubylodeUptimeKuma::ServiceStatus.safe_report(configuration)
+        report = RubylodeUptimeKuma::ServiceStatus.safe_report(settings)
       end
     end
 

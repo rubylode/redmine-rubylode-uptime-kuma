@@ -69,8 +69,12 @@ class FakeKumaServer
     @thread&.join(2)
   end
 
+  def base_url
+    "http://#{@host}:#{@port}"
+  end
+
   def metrics_url
-    "http://#{@host}:#{@port}/metrics"
+    "#{base_url}/metrics"
   end
 
   def metrics_text
