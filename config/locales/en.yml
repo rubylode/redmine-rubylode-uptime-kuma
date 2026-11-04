@@ -19,6 +19,13 @@ en:
       not_configured_link: Open the settings
       reason: "Why: %{reason}"
     page_title: Service status
+    widget:
+      not_set_up: Not set up yet
+      none_known: Uptime Kuma does not know these services
+      services_up:
+        one: "%{up} of %{count} service up"
+        other: "%{up} of %{count} services up"
+      with_unknown: "%{summary}, %{unknown} unknown"
     errors:
       line_field_count: "needs %{count} fields separated by |, found %{found}"
       line_name_missing: the name is empty

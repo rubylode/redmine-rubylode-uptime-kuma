@@ -1,25 +1,29 @@
 <%# The status block. Other plugins can render it: render partial: "rubylode_uptime_kuma/status"
-    Optional locals: title (replaces the block title), show_title (false hides it), compact (one line: the summary and what is down). It draws nothing for a person the
-    settings do not allow, and a hint for administrators while the plugin is not set up. %>
+    Optional locals: title (replaces the block title), show_title (false hides it), compact (one line: the summary and what is down).
+    It draws nothing for a person the settings do not allow, and a hint for administrators while the plugin is not set up.
+    On the Status page (the locals widget and status are set) it draws only the table: that page shows the title and the summary itself. %>
 <% settings = RubylodeUptimeKuma::Settings.current %>
 <% if settings.visible_to?(User.current) %>
   <% stylesheet = stylesheet_link_tag("rubylode_uptime_kuma", plugin: "redmine_rubylode_uptime_kuma") %>
   <%# A full page takes the stylesheet in its head; an AJAX render (the wiki preview) has no head, so it carries the link itself. %>
   <% if request.xhr? %><%= stylesheet %><% else %><% content_for :header_tags, stylesheet %><% end %>
+  <% on_status_page = local_assigns.key?(:widget) %>
   <% block_title = local_assigns[:title].presence || settings.block_title %>
-  <% show_title = local_assigns.fetch(:show_title, true) %>
+  <% show_title = local_assigns.fetch(:show_title, true) && !on_status_page %>
+  <% compact = local_assigns.fetch(:compact, false) %>
   <% if settings.configured? %>
-    <% report = RubylodeUptimeKuma::ServiceStatus.safe_report(settings) %>
+    <% report = (local_assigns[:status]&.data || {})[:report] || RubylodeUptimeKuma::ServiceStatus.safe_report(settings) %>
     <% show_response_time = settings.show_response_time? %>
-<% compact = local_assigns.fetch(:compact, false) %>
-<div class="rubylode-service-status<%= " is-compact" if compact %>">
-  <% if show_title && !compact %><h3 class="rubylode-service-status-title"><%= block_title %></h3><% end %>
-  <p class="rubylode-service-status-summary is-<%= report.summary_state.to_s.dasherize %>"><%= report.summary %></p>
-  <% if compact %>
-    <% report.services.select { |service| service.state == :down }.each do |service| %>
-      <%= link_to service.name, service.url, class: "rubylode-service-status-compact-down" %>
-    <% end %>
-  <% end %>
+    <div class="rubylode-service-status<%= " is-compact" if compact %>">
+      <% if show_title && !compact %><h3 class="rubylode-service-status-title"><%= block_title %></h3><% end %>
+      <% unless on_status_page %>
+        <p class="rubylode-service-status-summary is-<%= report.summary_state.to_s.dasherize %>"><%= report.summary %></p>
+      <% end %>
+      <% if compact %>
+        <% report.services.select { |service| service.state == :down }.each do |service| %>
+          <%= link_to service.name, service.url, class: "rubylode-service-status-compact-down" %>
+        <% end %>
+      <% end %>
       <% if report.unavailable? && User.current.admin? %>
         <p class="rubylode-service-status-hint"><%= l("rubylode_uptime_kuma.hints.reason", reason: report.failure_reason) %></p>
       <% end %>
