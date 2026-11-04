@@ -34,11 +34,14 @@ class RubylodeUptimeKuma::MyPageBlockTest < Redmine::IntegrationTest
   end
 
   test "the block is in Redmine's list of My page blocks" do
-    assert Redmine::MyPage.blocks.key?("rubylode_service_status")
-    assert_includes Redmine::MyPage.block_options.map(&:last), "rubylode_service_status"
+    assert Redmine::MyPage.blocks.key?("rubylode_uptime_kuma_status")
+    assert_includes Redmine::MyPage.block_options.map(&:last), "rubylode_uptime_kuma_status"
   end
 
-  test "a person who added the block sees the status on My page" do
+  test "the old block id is no longer offered but still draws the block for layouts that hold it" do
+    refute_includes Redmine::MyPage.block_options.map(&:last), "rubylode_service_status"
+    refute_includes Redmine::MyPage.block_options(["rubylode_uptime_kuma_status"]).map(&:last), "rubylode_service_status"
+
     preference = User.find(2).pref
     preference.my_page_layout = { "top" => ["rubylode_service_status"] }
     preference.save!
@@ -48,5 +51,17 @@ class RubylodeUptimeKuma::MyPageBlockTest < Redmine::IntegrationTest
 
     assert_response :success
     assert_select "#block-rubylode_service_status .rubylode-service-status-summary", text: "1 of 2 down"
+  end
+
+  test "a person who added the block sees the status on My page" do
+    preference = User.find(2).pref
+    preference.my_page_layout = { "top" => ["rubylode_uptime_kuma_status"] }
+    preference.save!
+
+    log_user("jsmith", "jsmith")
+    get "/my/page"
+
+    assert_response :success
+    assert_select "#block-rubylode_uptime_kuma_status .rubylode-service-status-summary", text: "1 of 2 down"
   end
 end

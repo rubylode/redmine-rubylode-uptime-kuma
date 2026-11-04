@@ -26,11 +26,13 @@ Redmine::Plugin.register :redmine_rubylode_uptime_kuma do
   version "1.1.1"
   requires_redmine version_or_higher: "5.1.0"
 
-  menu :top_menu, :rubylode_service_status, { controller: "rubylode_service_status", action: "show" },
-       caption: :"rubylode_uptime_kuma.page_title",
+  # With Rubylode Status installed the block lives on its Status page, so this plugin drops its own top menu item.
+  menu :top_menu, :rubylode_uptime_kuma_status, { controller: "rubylode_uptime_kuma_status", action: "show" },
+       caption: proc { RubylodeUptimeKuma::Settings.current.block_title },
        if: proc {
          settings = RubylodeUptimeKuma::Settings.current
-         settings.show_in_top_menu? && settings.configured? && settings.visible_to?(User.current)
+         !Redmine::Plugin.installed?(:redmine_rubylode_status) &&
+           settings.show_in_top_menu? && settings.configured? && settings.visible_to?(User.current)
        }
 
   settings default: RubylodeUptimeKuma::Settings::DEFAULTS, partial: "settings/rubylode_uptime_kuma"

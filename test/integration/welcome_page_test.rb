@@ -47,7 +47,7 @@ class RubylodeUptimeKuma::WelcomePageTest < Redmine::IntegrationTest
 
 test "the welcome text is rendered with Redmine's text formatting, so the macro works there without the setting" do
     configure_plugin("show_on_welcome_page" => "0")
-    with_settings welcome_text: "Hello.\n\n{{service_status}}" do
+    with_settings welcome_text: "Hello.\n\n{{uptime_kuma_status}}" do
       log_user("jsmith", "jsmith")
       get "/"
     end
@@ -159,7 +159,7 @@ class RubylodeUptimeKuma::WelcomePageKumaTest < Redmine::IntegrationTest
   test "Kuma is asked once across the welcome page and the status page within the cache window" do
     log_user("jsmith", "jsmith")
     get "/"
-    get "/service_status"
+    get "/status/uptime_kuma"
     get "/"
 
     assert_select ".rubylode-service-status-summary", text: "All services up"

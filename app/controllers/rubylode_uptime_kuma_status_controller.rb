@@ -16,7 +16,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 # The status block on a page of its own, for everyone the settings allow.
-class RubylodeServiceStatusController < ApplicationController
+class RubylodeUptimeKumaStatusController < ApplicationController
   before_action :require_login
   before_action :require_permission_to_see_status
 

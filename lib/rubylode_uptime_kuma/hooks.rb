@@ -46,7 +46,7 @@ module RubylodeUptimeKuma
     def view_layouts_base_content(context)
       return "" unless on_listed_page?(context)
 
-      context[:hook_caller].render(partial: "rubylode_uptime_kuma/service_status", locals: { compact: true })
+      context[:hook_caller].render(partial: "rubylode_uptime_kuma/status", locals: { compact: true })
     end
 
     private
@@ -62,7 +62,7 @@ module RubylodeUptimeKuma
       settings = RubylodeUptimeKuma::Settings.current
       return "" unless settings.public_send(enabled_method) && settings.public_send(column_method) == column
 
-      context[:hook_caller].render(partial: "rubylode_uptime_kuma/service_status")
+      context[:hook_caller].render(partial: "rubylode_uptime_kuma/status")
     end
   end
 end

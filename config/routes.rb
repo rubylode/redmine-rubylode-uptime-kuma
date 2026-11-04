@@ -15,4 +15,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-get "service_status", to: "rubylode_service_status#show", as: :rubylode_service_status
+get "status/uptime_kuma", to: "rubylode_uptime_kuma_status#show", as: :rubylode_uptime_kuma_status
+
+# The page used to live here. Kept for one release.
+get "service_status", to: redirect("/status/uptime_kuma", status: 301)

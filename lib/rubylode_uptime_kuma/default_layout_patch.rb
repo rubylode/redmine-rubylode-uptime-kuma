@@ -19,7 +19,14 @@ module RubylodeUptimeKuma
   # Puts the status block into Redmine's default My page layout, when the settings ask for it. Only people who have no
   # layout of their own get it; everyone else adds the block themselves from the My page block list.
   module DefaultLayoutPatch
-    BLOCK = "rubylode_service_status".freeze
+    BLOCK = "rubylode_uptime_kuma_status".freeze
+    # The block id before 2.0.0. Layouts that hold it keep working, but it is no longer offered in the block list.
+    LEGACY_BLOCK = "rubylode_service_status".freeze
+
+    # The list of blocks a person can add, without the old id.
+    def block_options(blocks_in_use = [])
+      super.reject { |_label, block_id| block_id == LEGACY_BLOCK }
+    end
 
     def default_layout
       layout = super

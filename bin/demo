@@ -10,7 +10,7 @@
 #   ruby bin/demo reset             stop them and wipe the data
 #
 # Logins: admin / admin (sees the settings and the hints), sam.rivera / demo-password-1 (an ordinary person).
-# Pages: /service_status, /my/page, /projects/demo-project/wiki, /settings/plugin/redmine_rubylode_uptime_kuma
+# Pages: /status/uptime_kuma, /my/page, /projects/demo-project/wiki, /settings/plugin/redmine_rubylode_uptime_kuma
 require "net/http"
 
 ROOT = File.expand_path("..", __dir__)

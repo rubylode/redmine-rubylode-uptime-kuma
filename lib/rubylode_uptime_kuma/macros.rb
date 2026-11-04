@@ -18,21 +18,29 @@
 module RubylodeUptimeKuma
   module Macros
     def self.register
-      # The same block as {{service_status}} under a second, self-describing name.
       Redmine::WikiFormatting::Macros.register do
-        %i[service_status uptime_kuma_status].each do |macro_name|
-          desc <<~DESCRIPTION
-            Shows the live status of the services listed in the Rubylode Uptime Kuma settings.
+        desc <<~DESCRIPTION
+          Shows the status of the services listed in the Rubylode Uptime Kuma settings.
 
-              {{#{macro_name}}}
-              {{#{macro_name}(title=Our services)}}
+            {{uptime_kuma_status}}
+            {{uptime_kuma_status(title=Our services)}}
 
-            Nothing is shown to people who are not allowed to see it.
-          DESCRIPTION
-          macro macro_name do |_object, arguments|
-            _positional, options = extract_macro_options(arguments, :title)
-            render partial: "rubylode_uptime_kuma/service_status", locals: { title: options[:title].presence }
-          end
+          Nothing is shown to people who are not allowed to see it.
+        DESCRIPTION
+        macro :uptime_kuma_status do |_object, arguments|
+          _positional, options = extract_macro_options(arguments, :title)
+          render partial: "rubylode_uptime_kuma/status", locals: { title: options[:title].presence }
+        end
+
+        desc <<~DESCRIPTION
+          The old name of {{uptime_kuma_status}}. It answers for one more release; use the new name.
+
+            {{service_status}}
+            {{service_status(title=Our services)}}
+        DESCRIPTION
+        macro :service_status do |_object, arguments|
+          _positional, options = extract_macro_options(arguments, :title)
+          render partial: "rubylode_uptime_kuma/status", locals: { title: options[:title].presence }
         end
       end
     end

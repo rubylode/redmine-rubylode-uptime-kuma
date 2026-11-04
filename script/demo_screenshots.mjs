@@ -19,7 +19,7 @@ const sam = await signedInPage(browser, "sam.rivera", "demo-password-1", viewpor
 const admin = await signedInPage(browser, "admin", "admin", viewport)
 
 async function shootBlock(page, name) {
-  await page.goto(`${baseUrl}/service_status`, { waitUntil: "load" })
+  await page.goto(`${baseUrl}/status/uptime_kuma`, { waitUntil: "load" })
   await page.waitForSelector(".rubylode-service-status")
   const block = await page.$("#content")
   await block.screenshot({ path: `${out}${name}.png` })

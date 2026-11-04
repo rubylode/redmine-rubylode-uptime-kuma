@@ -48,34 +48,40 @@ class RubylodeUptimeKuma::WikiMacroTest < Redmine::IntegrationTest
   end
 
   test "the macro draws the status block inside the wiki page" do
-    get_wiki_page("Our services:\n\n{{service_status}}")
+    get_wiki_page("Our services:\n\n{{uptime_kuma_status}}")
 
     assert_select ".wiki .rubylode-service-status-summary", text: "1 of 2 down"
     assert_select ".wiki tr.is-down td.rubylode-service-status-name", text: "Billing"
   end
 
-  test "the second macro name draws the same block" do
-    get_wiki_page("{{uptime_kuma_status}}")
+  test "the old macro name still draws the same block" do
+    get_wiki_page("{{service_status}}")
 
     assert_select ".wiki .rubylode-service-status-table"
   end
 
+  test "the old macro name takes a title" do
+    get_wiki_page("{{service_status(title=Old name)}}")
+
+    assert_select ".wiki h3.rubylode-service-status-title", text: /\AOld name/
+  end
+
   test "the macro takes a title" do
-    get_wiki_page("{{service_status(title=Customer-facing)}}")
+    get_wiki_page("{{uptime_kuma_status(title=Customer-facing)}}")
 
     assert_select ".wiki h3.rubylode-service-status-title", text: /\ACustomer-facing/
   end
 
   test "the macro uses the block title setting when it has no title" do
     configure_plugin("block_title" => "Company services")
-    get_wiki_page("{{service_status}}")
+    get_wiki_page("{{uptime_kuma_status}}")
 
     assert_select ".wiki h3.rubylode-service-status-title", text: /\ACompany services/
   end
 
   test "a person the permission setting excludes sees nothing where the macro stands" do
     configure_plugin("visibility" => "admins")
-    get_wiki_page("before {{service_status}} after")
+    get_wiki_page("before {{uptime_kuma_status}} after")
 
     assert_select ".wiki .rubylode-service-status", 0
     assert_select ".wiki", text: /before\s+after/
@@ -83,7 +89,7 @@ class RubylodeUptimeKuma::WikiMacroTest < Redmine::IntegrationTest
 
   test "an AJAX render of the macro, such as the wiki preview, carries its own stylesheet link" do
     log_user("jsmith", "jsmith")
-    post "/projects/ecookbook/wiki/Preview_target/preview", params: { text: "{{service_status}}" }, xhr: true
+    post "/projects/ecookbook/wiki/Preview_target/preview", params: { text: "{{uptime_kuma_status}}" }, xhr: true
 
     assert_response :success
     assert_select "link[href*=?]", "rubylode_uptime_kuma"

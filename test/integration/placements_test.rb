@@ -68,10 +68,10 @@ class RubylodeUptimeKuma::PlacementsTest < Redmine::IntegrationTest
 
   test "My page offers the block, and the default layout holds it only when the setting is on" do
     configure_plugin("show_on_my_page" => "0")
-    refute_includes Redmine::MyPage.default_layout.values.flatten, "rubylode_service_status"
+    refute_includes Redmine::MyPage.default_layout.values.flatten, "rubylode_uptime_kuma_status"
 
     configure_plugin("show_on_my_page" => "1")
-    assert_includes Redmine::MyPage.default_layout["top"], "rubylode_service_status"
+    assert_includes Redmine::MyPage.default_layout["top"], "rubylode_uptime_kuma_status"
     assert_includes Redmine::MyPage.default_layout["left"], "issuesassignedtome", "Redmine's own blocks are kept"
   end
 
@@ -84,7 +84,7 @@ class RubylodeUptimeKuma::PlacementsTest < Redmine::IntegrationTest
     log_user("jsmith", "jsmith")
     get "/my/page"
 
-    assert_select "#block-rubylode_service_status #{BLOCK}-summary", text: "1 of 2 down"
+    assert_select "#block-rubylode_uptime_kuma_status #{BLOCK}-summary", text: "1 of 2 down"
   end
 
   test "a person with no layout of their own does not get the block when the setting is off" do
@@ -97,7 +97,7 @@ class RubylodeUptimeKuma::PlacementsTest < Redmine::IntegrationTest
     get "/my/page"
 
     assert_response :success
-    assert_select "#block-rubylode_service_status", 0
+    assert_select "#block-rubylode_uptime_kuma_status", 0
   end
 
   test "My page shows nothing in the block for a person the permission setting excludes" do
@@ -177,18 +177,18 @@ class RubylodeUptimeKuma::PlacementsTest < Redmine::IntegrationTest
 
   # The top menu
 
-  test "the top menu has a Service status link only when the setting is on and the person may see it" do
+  test "the top menu has a link, named like the block title, only when the setting is on and the person may see it" do
     configure_plugin("show_in_top_menu" => "0")
     log_user("jsmith", "jsmith")
     get "/issues"
-    assert_select "#top-menu a[href=?]", "/service_status", 0
+    assert_select "#top-menu a[href=?]", "/status/uptime_kuma", 0
 
     configure_plugin("show_in_top_menu" => "1")
     get "/issues"
-    assert_select "#top-menu a[href=?]", "/service_status", text: "Service status"
+    assert_select "#top-menu a[href=?]", "/status/uptime_kuma", text: "Services"
 
     configure_plugin("show_in_top_menu" => "1", "visibility" => "admins")
     get "/issues"
-    assert_select "#top-menu a[href=?]", "/service_status", 0
+    assert_select "#top-menu a[href=?]", "/status/uptime_kuma", 0
   end
 end

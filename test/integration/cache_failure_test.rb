@@ -78,14 +78,14 @@ class RubylodeUptimeKuma::CacheFailureTest < Redmine::IntegrationTest
 
   test "My page answers 200 with status unavailable when the status object raises" do
     preference = User.find(2).pref
-    preference.my_page_layout = { "top" => ["rubylode_service_status"] }
+    preference.my_page_layout = { "top" => ["rubylode_uptime_kuma_status"] }
     preference.save!
 
     log_user("jsmith", "jsmith")
     raising_status_object { get "/my/page" }
 
     assert_response :success
-    assert_select "#block-rubylode_service_status #{BLOCK}-summary.is-unavailable"
+    assert_select "#block-rubylode_uptime_kuma_status #{BLOCK}-summary.is-unavailable"
   end
 
   test "the project overview answers 200 with status unavailable when the status object raises" do
@@ -110,7 +110,7 @@ class RubylodeUptimeKuma::CacheFailureTest < Redmine::IntegrationTest
 
   test "a wiki page with the macro answers 200 with status unavailable when the status object raises" do
     page = WikiPage.new(wiki: Project.find(1).wiki, title: "Status_#{SecureRandom.hex(3)}")
-    page.content = WikiContent.new(text: "{{service_status}}", author: User.find(2))
+    page.content = WikiContent.new(text: "{{uptime_kuma_status}}", author: User.find(2))
     page.save!
 
     log_user("jsmith", "jsmith")
@@ -122,7 +122,7 @@ class RubylodeUptimeKuma::CacheFailureTest < Redmine::IntegrationTest
 
   test "the status page answers 200 with status unavailable when the status object raises" do
     log_user("jsmith", "jsmith")
-    raising_status_object { get "/service_status" }
+    raising_status_object { get "/status/uptime_kuma" }
 
     assert_response :success
     assert_select "#{BLOCK}-summary.is-unavailable"
@@ -130,12 +130,12 @@ class RubylodeUptimeKuma::CacheFailureTest < Redmine::IntegrationTest
 
   test "an administrator sees the class name of the error in the hint, others do not" do
     log_user("admin", "admin")
-    raising_status_object { get "/service_status" }
+    raising_status_object { get "/status/uptime_kuma" }
     assert_select "#{BLOCK}-hint", text: /IOError/
 
     post "/logout"
     log_user("jsmith", "jsmith")
-    raising_status_object { get "/service_status" }
+    raising_status_object { get "/status/uptime_kuma" }
     assert_select "#{BLOCK}-hint", 0
   end
 end

@@ -97,19 +97,20 @@ en:
       answer_yes: "Yes"
       answer_no: "No"
       row_wiki: "Wiki page, news, issue or project description, comment, or the welcome text (Administration, Settings, General)"
-      row_wiki_how: "Type {{service_status}} or {{service_status(title=Our services)}}. Redmine renders all of these with its text formatting, so the macro works in each."
+      row_wiki_how: "Type {{uptime_kuma_status}} or {{uptime_kuma_status(title=Our services)}}. Redmine renders all of these with its text formatting, so the macro works in each."
       row_welcome: The welcome page
       row_welcome_how: Tick it under Show the block on, and choose a column.
       row_my_page: My page
-      row_my_page_how: "Add the Service status block from the block list on My page, or tick My page above for the default layout."
+      row_my_page_how: "Add the Uptime Kuma status block from the block list on My page, or tick My page above for the default layout."
       row_overview: The project Overview page
       row_overview_how: Tick it under Show the block on, and choose a column.
       row_paths: Any other page
       row_paths_how: "List its path (for example /issues) under Pages whose path is listed here. It shows in a compact form under the content."
       row_page: A page of its own
-      row_page_how: "Link to /service_status, or tick the top menu link above."
+      row_page_how: "Link to /status/uptime_kuma, or tick the top menu link above."
       row_partial: Themes and other plugins
-      row_partial_how: "In a view: render partial: \"rubylode_uptime_kuma/service_status\". Optional locals: title: \"Our services\", show_title: false, compact: true."
+      row_partial_how: "In a view: render partial: \"rubylode_uptime_kuma/status\". Optional locals: title: \"Our services\", show_title: false, compact: true."
   my:
     blocks:
-      rubylode_service_status: Service status
+      rubylode_uptime_kuma_status: Uptime Kuma status
+      rubylode_service_status: Uptime Kuma status

@@ -116,9 +116,9 @@ test "the placements are saved, with the path list" do
   
     assert_select "#rubylode-uptime-kuma-help h3", text: "How to show the block on other pages"
     assert_select "#rubylode-uptime-kuma-help tbody tr", 7
-    assert_select "#rubylode-uptime-kuma-help", text: /\{\{service_status\}\}/
-    assert_select "#rubylode-uptime-kuma-help", text: %r{rubylode_uptime_kuma/service_status}
-    assert_select "#rubylode-uptime-kuma-help", text: %r{/service_status}
+    assert_select "#rubylode-uptime-kuma-help", text: /\{\{uptime_kuma_status\}\}/
+    assert_select "#rubylode-uptime-kuma-help", text: %r{rubylode_uptime_kuma/status}
+    assert_select "#rubylode-uptime-kuma-help", text: %r{/status/uptime_kuma}
     assert_match(%r{<td>Yes</td>}, response.body)
     assert_match(%r{<td>No</td>}, response.body)
     assert_no_match(/translation missing/i, response.body)

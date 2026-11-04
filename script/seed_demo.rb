@@ -39,7 +39,7 @@ admin.save!(validate: false)
 Setting.default_language = "en"
 Setting.send(:"plugin_redmine_rubylode_uptime_kuma=",
              RubylodeUptimeKuma::Settings::DEFAULTS.merge(
-               "metrics_url" => "http://fake_kuma:9100/metrics",
+               "base_url" => "http://fake_kuma:9100",
                "allow_plain_http" => "1", # the fake Kuma is on the compose network over plain http
                "services" => DEMO_SERVICES,
                "dashboard_url" => "https://uptime.example.com/dashboard",
@@ -72,12 +72,12 @@ Member.find_or_create_by!(project: project, user: sam) { |member| member.roles =
 project.create_wiki(start_page: "Wiki") unless project.wiki
 page = project.wiki.find_or_new_page("Wiki")
 page.content ||= WikiContent.new
-page.content.text = "h1. Welcome\n\nWhere we stand right now:\n\n{{service_status}}\n"
+page.content.text = "h1. Welcome\n\nWhere we stand right now:\n\n{{uptime_kuma_status}}\n"
 page.content.author = admin
 page.save!
 
 preference = sam.pref
-preference.my_page_layout = { "top" => ["rubylode_service_status"] }
+preference.my_page_layout = { "top" => ["rubylode_uptime_kuma_status"] }
 preference.save!
 
 puts "Demo data ready. Sign in as sam.rivera / #{DEMO_PASSWORD} or admin / admin."

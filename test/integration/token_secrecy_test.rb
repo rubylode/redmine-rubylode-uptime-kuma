@@ -51,7 +51,7 @@ class RubylodeUptimeKuma::TokenSecrecyTest < Redmine::IntegrationTest
 
   test "with the right token the page works and the token is nowhere in the html or the log" do
     log_user("admin", "admin")
-    get "/service_status"
+    get "/status/uptime_kuma"
 
     assert_select ".rubylode-service-status-summary", text: "All services up"
     refute_includes response.body, SAMPLE_TOKEN
@@ -62,7 +62,7 @@ class RubylodeUptimeKuma::TokenSecrecyTest < Redmine::IntegrationTest
     ENV[TOKEN_VARIABLE] = "wrong-token-also-secret-55"
 
     log_user("admin", "admin")
-    get "/service_status"
+    get "/status/uptime_kuma"
 
     assert_select ".rubylode-service-status-summary", text: "Status unavailable"
     [SAMPLE_TOKEN, "wrong-token-also-secret-55"].each do |token|
@@ -92,7 +92,7 @@ class RubylodeUptimeKuma::TokenSecrecyTest < Redmine::IntegrationTest
 
   test "Kuma is asked once for two page loads within the cache window" do
     log_user("jsmith", "jsmith")
-    2.times { get "/service_status" }
+    2.times { get "/status/uptime_kuma" }
 
     assert_equal 1, @server.request_count
   end

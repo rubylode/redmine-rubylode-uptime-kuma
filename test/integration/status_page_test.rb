@@ -32,11 +32,23 @@ class RubylodeUptimeKuma::ServiceStatusPageTest < Redmine::IntegrationTest
     restore_cache
   end
 
+  test "the old page address redirects to the new one with a 301" do
+    log_user("jsmith", "jsmith")
+    get "/service_status"
+
+    assert_response :moved_permanently
+    assert_redirected_to "/status/uptime_kuma"
+  end
+
+  test "the page is named for the short name" do
+    assert_equal "/status/uptime_kuma", Rails.application.routes.url_helpers.rubylode_uptime_kuma_status_path
+  end
+
   test "the page shows a table of services with description, status and response time, down ones first" do
     publish_metrics(metrics_text({ "Website homepage" => 1, "Billing app health" => 0 }, "Website homepage" => 142))
 
     log_user("jsmith", "jsmith")
-    get "/service_status"
+    get "/status/uptime_kuma"
 
     assert_response :success
     assert_select ".rubylode-service-status-summary", text: "1 of 2 down"
@@ -54,7 +66,7 @@ class RubylodeUptimeKuma::ServiceStatusPageTest < Redmine::IntegrationTest
     publish_metrics(metrics_text("Website homepage" => 1, "Billing app health" => 1, "Wiki" => 1))
 
     log_user("jsmith", "jsmith")
-    get "/service_status"
+    get "/status/uptime_kuma"
 
     assert_select ".rubylode-service-status-summary.is-all-up", text: "All services up"
     assert_select "tr.is-down", 0
@@ -65,7 +77,7 @@ class RubylodeUptimeKuma::ServiceStatusPageTest < Redmine::IntegrationTest
     publish_metrics(metrics_text("Website homepage" => 1, "Vendor login (external)" => 0))
 
     log_user("jsmith", "jsmith")
-    get "/service_status"
+    get "/status/uptime_kuma"
 
     assert_select ".rubylode-service-status-table", text: /Vendor login/, count: 0
     assert_select ".rubylode-service-status-summary", text: "All services up"
@@ -75,7 +87,7 @@ class RubylodeUptimeKuma::ServiceStatusPageTest < Redmine::IntegrationTest
     publish_metrics(metrics_text({ "Website homepage" => 0 }, "Website homepage" => -1))
 
     log_user("jsmith", "jsmith")
-    get "/service_status"
+    get "/status/uptime_kuma"
 
     assert_select "tr.is-down td.rubylode-service-status-response-time", text: "–"
   end
@@ -85,7 +97,7 @@ class RubylodeUptimeKuma::ServiceStatusPageTest < Redmine::IntegrationTest
     publish_metrics(metrics_text({ "Website homepage" => 1 }, "Website homepage" => 142))
 
     log_user("jsmith", "jsmith")
-    get "/service_status"
+    get "/status/uptime_kuma"
 
     assert_select "td.rubylode-service-status-response-time", text: /142 ms/
     assert_select "td.rubylode-service-status-response-time a", 0
@@ -96,7 +108,7 @@ class RubylodeUptimeKuma::ServiceStatusPageTest < Redmine::IntegrationTest
     publish_metrics(metrics_text({ "Website homepage" => 1 }, "Website homepage" => 142))
 
     log_user("jsmith", "jsmith")
-    get "/service_status"
+    get "/status/uptime_kuma"
 
     assert_select ".rubylode-service-status-table th", text: "Response time", count: 0
     assert_select "td.rubylode-service-status-response-time", 0
@@ -107,7 +119,7 @@ class RubylodeUptimeKuma::ServiceStatusPageTest < Redmine::IntegrationTest
     publish_metrics(metrics_text("Website homepage" => 1))
 
     log_user("jsmith", "jsmith")
-    get "/service_status"
+    get "/status/uptime_kuma"
 
     assert_select "h2", text: "Company services"
   end
@@ -118,7 +130,7 @@ class RubylodeUptimeKuma::ServiceStatusPageTest < Redmine::IntegrationTest
     )
 
     log_user("jsmith", "jsmith")
-    get "/service_status"
+    get "/status/uptime_kuma"
 
     assert_response :success
     assert_select ".rubylode-service-status-summary.is-unavailable", text: "Status unavailable"
@@ -132,7 +144,7 @@ class RubylodeUptimeKuma::ServiceStatusPageTest < Redmine::IntegrationTest
     )
 
     log_user("admin", "admin")
-    get "/service_status"
+    get "/status/uptime_kuma"
 
     assert_select ".rubylode-service-status-hint", text: /Kuma answered 503/
   end
@@ -142,7 +154,7 @@ class RubylodeUptimeKuma::ServiceStatusPageTest < Redmine::IntegrationTest
     configure_plugin("base_url" => "http://127.0.0.1:9")
 
     log_user("jsmith", "jsmith")
-    get "/service_status"
+    get "/status/uptime_kuma"
 
     assert_response :success
     assert_select ".rubylode-service-status-summary", text: "Status unavailable"
@@ -152,18 +164,18 @@ class RubylodeUptimeKuma::ServiceStatusPageTest < Redmine::IntegrationTest
     configure_plugin("base_url" => "")
 
     log_user("admin", "admin")
-    get "/service_status"
+    get "/status/uptime_kuma"
     assert_select ".rubylode-service-status-hint a[href=?]", "/settings/plugin/redmine_rubylode_uptime_kuma"
 
     post "/logout"
     log_user("jsmith", "jsmith")
-    get "/service_status"
+    get "/status/uptime_kuma"
     assert_response :success
     assert_select ".rubylode-service-status", 0
   end
 
   test "an anonymous visitor is sent to sign in" do
-    get "/service_status"
+    get "/status/uptime_kuma"
 
     assert_redirected_to %r{/login}
   end
@@ -172,7 +184,7 @@ class RubylodeUptimeKuma::ServiceStatusPageTest < Redmine::IntegrationTest
     publish_metrics(metrics_text("Website homepage" => 1))
 
     log_user("jsmith", "jsmith")
-    get "/service_status"
+    get "/status/uptime_kuma"
 
     assert_select "head link[href*=?]", "rubylode_uptime_kuma"
   end
@@ -197,7 +209,7 @@ class RubylodeUptimeKuma::ServiceStatusPermissionTest < Redmine::IntegrationTest
     configure_plugin
 
     log_user("jsmith", "jsmith")
-    get "/service_status"
+    get "/status/uptime_kuma"
 
     assert_response :success
     assert_select ".rubylode-service-status-table"
@@ -207,12 +219,12 @@ class RubylodeUptimeKuma::ServiceStatusPermissionTest < Redmine::IntegrationTest
     configure_plugin("visibility" => "admins")
 
     log_user("jsmith", "jsmith")
-    get "/service_status"
+    get "/status/uptime_kuma"
     assert_response :forbidden
 
     post "/logout"
     log_user("admin", "admin")
-    get "/service_status"
+    get "/status/uptime_kuma"
     assert_response :success
     assert_select ".rubylode-service-status-table"
   end
