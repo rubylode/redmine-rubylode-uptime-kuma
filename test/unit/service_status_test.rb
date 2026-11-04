@@ -224,4 +224,14 @@ class RubylodeUptimeKuma::ServiceStatusResilienceTest < ActiveSupport::TestCase
     assert_equal "ArgumentError", report.failure_reason
     assert_includes log, "ArgumentError: boom"
   end
+
+  test "safe_report and current work without arguments, reading the saved settings" do
+    configure_plugin
+    cache = ActiveSupport::Cache::MemoryStore.new
+    RubylodeUptimeKuma::ServiceStatus.cache = cache
+    cache.write(RubylodeUptimeKuma::ServiceStatus.cache_key_for("https://kuma.example.com/metrics"), metrics_text({ "Website homepage" => 1 }))
+
+    assert_equal 3, RubylodeUptimeKuma::ServiceStatus.safe_report.services.size
+    assert_equal 3, RubylodeUptimeKuma::ServiceStatus.current.report.services.size
+  end
 end

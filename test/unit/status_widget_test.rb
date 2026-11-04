@@ -114,7 +114,7 @@ class RubylodeUptimeKuma::StatusWidgetTest < ActiveSupport::TestCase
     data = widget_data
 
     assert_equal "unknown", data[:state]
-    assert_equal "Not set up yet", data[:summary]
+    assert_equal "Uptime Kuma is not set up yet", data[:summary]
     assert_empty data[:items]
   end
 

@@ -17,7 +17,7 @@
 
 # Version 2.0.0 asks for the Uptime Kuma address and adds /metrics itself, so the saved "metrics_url" becomes "base_url"
 # without its trailing /metrics. Going back adds /metrics again.
-class RenameSettingsForVersionTwo < ActiveRecord::Migration[6.1]
+class RenameKumaSettingsForVersionTwo < ActiveRecord::Migration[6.1]
   SETTING_NAME = "plugin_redmine_rubylode_uptime_kuma".freeze
   METRICS_SUFFIX = "/metrics".freeze
 

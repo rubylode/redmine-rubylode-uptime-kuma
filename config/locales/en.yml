@@ -14,7 +14,7 @@ en:
       unknown: Unknown
       no_response_time: "-"
     widget:
-      not_set_up: Not set up yet
+      not_set_up: Uptime Kuma is not set up yet
       none_known: Uptime Kuma does not know these services
       services_up:
         one: "%{up} of %{count} service up"
