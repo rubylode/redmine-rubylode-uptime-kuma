@@ -2,6 +2,13 @@
 
 <p><img src="docs/thumbnail.png" alt="Rubylode Uptime Kuma plugin" width="160"></p>
 
+[![tests](https://img.shields.io/github/actions/workflow/status/rubylode/redmine-rubylode-uptime-kuma/tests.yml?branch=main&label=tests)](https://github.com/rubylode/redmine-rubylode-uptime-kuma/actions/workflows/tests.yml)
+[![security](https://img.shields.io/github/actions/workflow/status/rubylode/redmine-rubylode-uptime-kuma/security.yml?branch=main&label=security)](https://github.com/rubylode/redmine-rubylode-uptime-kuma/actions/workflows/security.yml)
+[![version](https://img.shields.io/github/v/tag/rubylode/redmine-rubylode-uptime-kuma?sort=semver&label=version)](https://github.com/rubylode/redmine-rubylode-uptime-kuma/tags)
+[![license](https://img.shields.io/github/license/rubylode/redmine-rubylode-uptime-kuma)](https://github.com/rubylode/redmine-rubylode-uptime-kuma/blob/main/LICENSE)
+![Redmine](https://img.shields.io/badge/Redmine-5.1%20%7C%206.0%20%7C%206.1%20%7C%207.0-b22222)
+![Ruby](https://img.shields.io/badge/Ruby-3.2%20%7C%203.3%20%7C%203.4%20%7C%204.0-cc342d)
+
 A plugin for Redmine 5.1 or newer that shows the live status of your services, read from [Uptime Kuma](https://github.com/louislam/uptime-kuma), as a block. It can go on the welcome page, My page, the project Overview, under any page you list, in a wiki page or on a page of its own.
 
 Only the services you list are shown, under the names you choose. Services that are down come first, a summary line says "All services up" or "1 of 5 down", and each row can show Kuma's latest response time. When Kuma cannot be reached the block says "Status unavailable" and the page around it renders as usual. Kuma is asked once per cache window, not once per page view.
