@@ -1,4 +1,4 @@
-# Rubylode Uptime Kuma: a live service status block for Redmine
+# Rubylode Uptime Kuma: the status of your services in Redmine
 # Copyright (C) 2026  Nick Gorbikoff
 #
 # This program is free software; you can redistribute it and/or
@@ -83,13 +83,13 @@ class RubylodeUptimeKuma::ServiceStatusPageTest < Redmine::IntegrationTest
     assert_select ".rubylode-service-status-summary", text: "All services up"
   end
 
-  test "a response time of minus one shows a dash and not a number" do
+  test "a response time of minus one shows a hyphen and not a number" do
     publish_metrics(metrics_text({ "Website homepage" => 0 }, "Website homepage" => -1))
 
     log_user("jsmith", "jsmith")
     get "/status/uptime_kuma"
 
-    assert_select "tr.is-down td.rubylode-service-status-response-time", text: "–"
+    assert_select "tr.is-down td.rubylode-service-status-response-time", text: "-"
   end
 
   test "without a dashboard link the response time is plain text" do

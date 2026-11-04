@@ -1,4 +1,4 @@
-# Rubylode Uptime Kuma: a live service status block for Redmine
+# Rubylode Uptime Kuma: the status of your services in Redmine
 # Copyright (C) 2026  Nick Gorbikoff
 #
 # This program is free software; you can redistribute it and/or
@@ -67,6 +67,24 @@ module RubylodeUptimeKumaTestHelpers
     def write(*)
       raise Errno::EACCES, "@ apply2files - /var/cache/entry" if @fail_write
     end
+  end
+
+  # A stand-in for the Status plugin's registry, for the length of the block. It only records what is registered.
+  class FakeStatusRegistry
+    cattr_accessor :registrations, default: []
+
+    def self.register(**arguments)
+      registrations << arguments
+    end
+  end
+
+  def with_status_plugin_registry
+    FakeStatusRegistry.registrations = []
+    Object.const_set(:RubylodeStatus, Module.new)
+    RubylodeStatus.const_set(:Registry, FakeStatusRegistry)
+    yield
+  ensure
+    Object.send(:remove_const, :RubylodeStatus)
   end
 
   # Runs the block with Rails.logger writing into a string, and returns that string.

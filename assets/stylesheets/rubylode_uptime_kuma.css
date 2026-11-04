@@ -197,6 +197,14 @@ table.list.rubylode-service-status-table .rubylode-service-status-response-time 
   margin-bottom: 8px;
 }
 
-.rubylode-uptime-kuma-help-snippets {
-  margin-top: 12px;
+/* The Column select next to a placement check box on the settings page. */
+.rubylode-uptime-kuma-column {
+  margin-left: 1em;
+}
+
+.tabular .rubylode-uptime-kuma-column label {
+  float: none;
+  width: auto;
+  margin-left: 0;
+  font-weight: normal;
 }

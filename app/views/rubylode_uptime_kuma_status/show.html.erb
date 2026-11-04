@@ -1,3 +1,4 @@
 <% html_title @settings.block_title %>
 <h2><%= @settings.block_title %></h2>
 <%= render partial: "rubylode_uptime_kuma/status", locals: { show_title: false } %>
+<%= render partial: "rubylode_uptime_kuma/status_plugin_notice" %>

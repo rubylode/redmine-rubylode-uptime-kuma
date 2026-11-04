@@ -1,4 +1,4 @@
-# Rubylode Uptime Kuma: a live service status block for Redmine
+# Rubylode Uptime Kuma: the status of your services in Redmine
 # Copyright (C) 2026  Nick Gorbikoff
 #
 # This program is free software; you can redistribute it and/or

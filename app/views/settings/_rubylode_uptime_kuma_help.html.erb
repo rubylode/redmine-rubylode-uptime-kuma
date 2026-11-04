@@ -17,9 +17,11 @@
       <% end %>
     </tbody>
   </table>
-  <ul class="rubylode-uptime-kuma-help-snippets">
-    <li><code>{{uptime_kuma_status}}</code></li>
-    <li><code>{{uptime_kuma_status(title=Our services)}}</code></li>
-    <li><code>render partial: "rubylode_uptime_kuma/status", locals: { compact: true }</code></li>
-  </ul>
+  <h4><%= l("#{help}.snippets") %></h4>
+  <p><%= l("#{help}.snippet_macro_title") %></p>
+  <pre>{{uptime_kuma_status}}</pre>
+  <p><%= l("#{help}.snippet_macro_titled") %></p>
+  <pre>{{uptime_kuma_status(title=Our services)}}</pre>
+  <p><%= l("#{help}.snippet_partial") %></p>
+  <pre>&lt;%= render partial: "rubylode_uptime_kuma/status", locals: { compact: true } %&gt;</pre>
 </div>

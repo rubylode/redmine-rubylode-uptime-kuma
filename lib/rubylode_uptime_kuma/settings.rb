@@ -1,4 +1,4 @@
-# Rubylode Uptime Kuma: a live service status block for Redmine
+# Rubylode Uptime Kuma: the status of your services in Redmine
 # Copyright (C) 2026  Nick Gorbikoff
 #
 # This program is free software; you can redistribute it and/or
@@ -51,6 +51,12 @@ module RubylodeUptimeKuma
       "show_in_top_menu" => "0",
       "visibility" => "logged_in"
     }.freeze
+
+    # True when the Rubylode Status plugin is installed: the block is then on its page, and this plugin drops its own
+    # top menu item and the setting for it.
+    def self.status_plugin_installed?
+      defined?(RubylodeStatus::Registry) ? true : false
+    end
 
     def self.current
       new(Setting.send(:"plugin_#{PLUGIN_ID}"))

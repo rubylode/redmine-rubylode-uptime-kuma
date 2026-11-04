@@ -1,6 +1,10 @@
 en:
   rubylode_uptime_kuma:
     plugin_name: Rubylode Uptime Kuma
+    status_plugin:
+      missing_html: "Install %{link} to see this with the other status blocks on one page."
+      installed_html: "Rubylode Status is installed, so this block shows on the %{link}."
+      status_page: Status page
     status:
       all_up: All services up
       some_down: "%{down} of %{known} down"
@@ -8,7 +12,14 @@ en:
       up: Up
       down: Down
       unknown: Unknown
-      no_response_time: "–"
+      no_response_time: "-"
+    widget:
+      not_set_up: Not set up yet
+      none_known: Uptime Kuma does not know these services
+      services_up:
+        one: "%{up} of %{count} service up"
+        other: "%{up} of %{count} services up"
+      with_unknown: "%{summary}, %{unknown} unknown"
     columns:
       service: Service
       description: Description
@@ -18,14 +29,6 @@ en:
       not_configured: "Service status is not set up yet. Add the Uptime Kuma address and the services list in the plugin settings."
       not_configured_link: Open the settings
       reason: "Why: %{reason}"
-    page_title: Service status
-    widget:
-      not_set_up: Not set up yet
-      none_known: Uptime Kuma does not know these services
-      services_up:
-        one: "%{up} of %{count} service up"
-        other: "%{up} of %{count} services up"
-      with_unknown: "%{summary}, %{unknown} unknown"
     errors:
       line_field_count: "needs %{count} fields separated by |, found %{found}"
       line_name_missing: the name is empty
@@ -33,11 +36,11 @@ en:
       line_prefix: "Services, line %{line_number}: %{message}"
       base_url_invalid: The Uptime Kuma address must start with http:// or https://
       dashboard_url_invalid: The dashboard link must start with http:// or https://
-      environment_variable_invalid: "The token variable name must start with UPTIME_KUMA_ and use only capital letters, digits and underscores, so the plugin can never read another secret"
+      environment_variable_invalid: The token variable name must start with UPTIME_KUMA_ and use only capital letters, digits and underscores.
       allowed_hosts_invalid: "Allowed hosts must be plain host names, separated by spaces or commas (not: %{hosts})"
       host_not_in_allowed_hosts: "The Uptime Kuma address host %{host} is not in the allowed hosts"
       host_not_allowed: "The token is not sent to %{host}: it is not an allowed host"
-      plain_http_refused: "The token is not sent over plain http. Use https, or tick the allow plain http setting for an internal network"
+      plain_http_refused: The token is not sent over plain http. Use https, or check "Allow plain http" for an internal network.
       kuma_redirect: Kuma redirected the request; redirects are never followed with the token
       number_invalid: "%{field} must be a whole number of at least %{minimum}"
       path_line_prefix: "Paths, line %{line_number}: %{message}"
@@ -50,51 +53,79 @@ en:
       visibility_invalid: Who may see the block must be one of the listed choices
       block_title_blank: The block title cannot be empty
       token_not_set: "The environment variable %{name} is not set"
-      token_missing: Kuma token is not set
+      token_missing: The Kuma token is not set
       kuma_status: "Kuma answered %{status}"
       kuma_unreachable: "Kuma could not be reached (%{error_class})"
       kuma_did_not_answer: Kuma did not answer
     settings:
-      base_url: Uptime Kuma address
-      base_url_hint: "For example https://uptime.example.com. Empty means the block is not shown to anyone but administrators, who get a hint."
-      token_environment_variable: Name of the token environment variable
-      token_environment_variable_hint: "The token itself is never saved here: put it in this environment variable before Redmine starts. The name must start with UPTIME_KUMA_. It is used as the password of the metrics request."
-      token_is_set: "set in the environment"
-      token_is_not_set: "not set in the environment"
-      allowed_hosts: Allowed hosts
-      allowed_hosts_hint: "Hosts the token may be sent to, separated by spaces or commas. Empty means only the host of the metrics URL. Redirects to any other host are never followed."
-      allow_plain_http: Allow plain http (internal network)
-      allow_plain_http_hint: "The token is only sent over https, or to this machine (localhost). Tick this only when Kuma is reached over a network you trust."
-      services: Services
-      services_hint: "One service per line: Name | URL | Description | Kuma monitor name. The description may be empty. Lines starting with # are ignored."
-      services_example: |-
-        Website | https://www.example.com | The public site | Website homepage
-        Billing | https://billing.example.com | Invoices | Billing app health
-      dashboard_url: Dashboard link
-      dashboard_url_hint: "Where a response time links to, for example https://uptime.example.com/dashboard. Optional."
-      cache_seconds: Cache seconds
-      cache_seconds_hint: "Kuma is asked at most once in this many seconds."
-      failure_cache_seconds: Failure cache seconds
-      failure_cache_seconds_hint: "After a failed answer Kuma is left alone for this long."
-      timeout_seconds: Timeout seconds
-      show_response_time: Show the response time
-      block_title: Block title
+      base_url:
+        label: Uptime Kuma address
+        hint: "The address of your Uptime Kuma, for example https://uptime.example.com. Empty means the block is shown to administrators only, with a hint."
+      token_environment_variable:
+        label: Token variable
+        hint: "The name of the environment variable that holds the API token. The token is never saved here. Set it before Redmine starts. The name must start with UPTIME_KUMA_."
+        is_set: "set in the environment"
+        is_not_set: "not set in the environment"
+      allowed_hosts:
+        label: Allowed hosts
+        hint: "Hosts that may receive the credentials besides the address above, separated by spaces or commas. Redirects to other hosts are never followed."
+      allow_plain_http:
+        label: Allow plain http
+        hint: "Check this only when the service is on a network you trust. The credentials then travel unencrypted."
+      services:
+        label: Services
+        hint: "One service per line: Name | URL | Description | Kuma monitor name. Lines starting with # are ignored."
+        example: |-
+          Website | https://www.example.com | The public site | Website homepage
+          Billing | https://billing.example.com | Invoices | Billing app health
+      dashboard_url:
+        label: Dashboard link
+        hint: "Where a response time links to, for example https://uptime.example.com/dashboard. Empty means the response time is not a link."
+      show_response_time:
+        label: Show the response time
+      block_title:
+        label: Block title
+        hint: The heading of the block and the name of the top menu link.
+      visibility:
+        label: Who may see the block
+        logged_in: Everyone who is signed in
+        admins: Administrators only
       show_on_heading: Show the block on
-      show_on_welcome_page: The welcome page (Home)
-      show_on_my_page: My page
-      show_on_my_page_hint: "Adds the block to the default My page, for people who have not arranged their own. Everyone else adds it from the block list on My page."
-      show_on_project_overview: The project Overview page
-      show_on_matching_pages: "Pages whose path is listed here"
-      matching_page_paths: Paths
-      matching_page_paths_hint: "One path per line, for example /issues or /projects/*/issues. * stands for anything inside one path segment, ** for anything including slashes. Query strings and a trailing slash are ignored. The block appears in a compact form under the page content. Sign-in, account, Administration and settings pages are never matched by a wildcard: list /admin/* or /settings explicitly if you really want it there."
-      show_in_top_menu: Add a Service status link to the top menu
-      show_in_top_menu_hint: "Links to the standalone page /service_status for the people allowed to see it."
-      column_label: Column
+      show_on_welcome_page:
+        label: Welcome page
+        hint: Adds the block to Redmine's home page for the people who may see it.
+      welcome_page_column:
+        label: Column
+        hint: Left or right.
+      show_on_my_page:
+        label: My page
+        hint: "Adds the block to the default My page, for people who have not arranged their own. Everyone can still add it from the block list."
+      show_on_project_overview:
+        label: Project Overview page
+        hint: Adds the block to every project's Overview page.
+      project_overview_column:
+        label: Column
+        hint: Left or right.
+      show_on_matching_pages:
+        label: Pages matching these paths
+        hint: Adds a small version of the block to each page whose path matches one of the paths below.
+      matching_page_paths:
+        label: Paths
+        hint: "One path per line, starting with /. * stands for anything inside one path segment, ** for anything. A query string and a trailing slash are ignored."
+      show_in_top_menu:
+        label: Show in the top menu
+        hint: Adds a link to /status/uptime_kuma to the top menu, for the people who may see the block.
+      cache_seconds:
+        label: Cache seconds
+        hint: Uptime Kuma is asked at most once in this many seconds.
+      failure_cache_seconds:
+        label: Failure cache seconds
+        hint: After a failed answer Uptime Kuma is left alone for this many seconds.
+      timeout_seconds:
+        label: Timeout seconds
+        hint: A request to Uptime Kuma is given up after this many seconds.
       column_left: Left
       column_right: Right
-      visibility: Who may see the block
-      visibility_logged_in: Everyone who is signed in
-      visibility_admins: Administrators only
     help:
       heading: How to show the block on other pages
       intro: "The block always follows the permission, cache and title settings above. Pick a place:"
@@ -103,20 +134,24 @@ en:
       needs_setting: Needs a setting
       answer_yes: "Yes"
       answer_no: "No"
-      row_wiki: "Wiki page, news, issue or project description, comment, or the welcome text (Administration, Settings, General)"
+      row_wiki: Wiki pages, news, issue and project descriptions, comments, the welcome text
       row_wiki_how: "Type {{uptime_kuma_status}} or {{uptime_kuma_status(title=Our services)}}. Redmine renders all of these with its text formatting, so the macro works in each."
       row_welcome: The welcome page
-      row_welcome_how: Tick it under Show the block on, and choose a column.
+      row_welcome_how: Check it under Show the block on, and choose a column.
       row_my_page: My page
-      row_my_page_how: "Add the Uptime Kuma status block from the block list on My page, or tick My page above for the default layout."
+      row_my_page_how: "Add the Uptime Kuma status block from the block list on My page, or check My page above for the default layout."
       row_overview: The project Overview page
-      row_overview_how: Tick it under Show the block on, and choose a column.
+      row_overview_how: Check it under Show the block on, and choose a column.
       row_paths: Any other page
-      row_paths_how: "List its path (for example /issues) under Pages whose path is listed here. It shows in a compact form under the content."
+      row_paths_how: "List its path (for example /issues) under Pages matching these paths. It shows in a compact form under the content."
       row_page: A page of its own
-      row_page_how: "Link to /status/uptime_kuma, or tick the top menu link above."
+      row_page_how: "Link to /status/uptime_kuma, or check Show in the top menu above."
       row_partial: Themes and other plugins
       row_partial_how: "In a view: render partial: \"rubylode_uptime_kuma/status\". Optional locals: title: \"Our services\", show_title: false, compact: true."
+      snippets: Copy and paste
+      snippet_macro_title: In a wiki page, news item, description or the welcome text
+      snippet_macro_titled: With your own heading
+      snippet_partial: In a view of a theme or plugin
   my:
     blocks:
       rubylode_uptime_kuma_status: Uptime Kuma status
