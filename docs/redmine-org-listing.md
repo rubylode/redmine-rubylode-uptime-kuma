@@ -7,21 +7,21 @@ The text to paste at www.redmine.org, Plugins, New plugin. Redmine's "Check for 
 | Name | Rubylode Uptime Kuma |
 | Short description | A live service status block from Uptime Kuma: a wiki macro, a page, a My page block and a partial |
 | Homepage | https://github.com/rubylode/redmine-rubylode-uptime-kuma |
-| Compatible with | Redmine 5.0.x, 5.1.x, 6.0.x, 6.1.x, 7.0.x |
+| Compatible with | Redmine 5.1.x, 6.0.x, 6.1.x, 7.0.x |
 | License | GNU General Public License, version 2 or (at your option) any later version |
 | Author | Rubylode |
 
 ## Notes for the first version
 
-Version 1.1.0. A live service status block from Uptime Kuma: a wiki macro, a page, a My page block and a partial. Needs Redmine 5.0 or newer. Install and settings are described in the README at https://github.com/rubylode/redmine-rubylode-uptime-kuma.
+Version 1.1.1. A live service status block from Uptime Kuma: a wiki macro, a page, a My page block and a partial. Needs Redmine 5.1 or newer. Install and settings are described in the README at https://github.com/rubylode/redmine-rubylode-uptime-kuma.
 
 ## File to upload
 
-`redmine_rubylode_uptime_kuma-1.1.0.zip`, the file the GitHub release workflow publishes when a `v1.1.0` tag is pushed. Upload the same file that is attached to the GitHub release.
+`redmine_rubylode_uptime_kuma-1.1.1.zip`, the file the GitHub release workflow publishes when a `v1.1.1` tag is pushed. Upload the same file that is attached to the GitHub release.
 
 ## Checking the result
 
-The name, author and version in the listing must match what the plugin registers (`Rubylode Uptime Kuma`, `Rubylode`, `1.1.0`). When they do, Administration, Plugins, Check for updates shows:
+The name, author and version in the listing must match what the plugin registers (`Rubylode Uptime Kuma`, `Rubylode`, `1.1.1`). When they do, Administration, Plugins, Check for updates shows:
 
 - a green tick: the installed version is the latest one listed on redmine.org;
 - an amber warning: redmine.org lists a newer version than the installed one;
