@@ -1,10 +1,10 @@
 # Third-party notices
 
-The plugin itself is GPL v2 or later (see `LICENSE`). It uses the colour values below, which keep their own licence.
+The plugin itself is GPL v2 or later (see `LICENSE`). It uses the color values below, which keep their own license.
 
 ## Open Color
 
-The fallback colours in `assets/stylesheets/rubylode_uptime_kuma.css` (for a theme that does not define the `--oc-*`
+The fallback colors in `assets/stylesheets/rubylode_uptime_kuma.css` (for a theme that does not define the `--oc-*`
 variables) are values from [Open Color](https://github.com/yeun/open-color), MIT licensed.
 
     The MIT License (MIT)
