@@ -2,7 +2,7 @@
 
 <p><img src="docs/thumbnail.png" alt="Rubylode Uptime Kuma plugin" width="160"></p>
 
-A Redmine 7 plugin that shows the live status of your services, read from [Uptime Kuma](https://github.com/louislam/uptime-kuma), as a block. It can go on the welcome page, My page, the project Overview, under any page you list, in a wiki page or on a page of its own.
+A plugin for Redmine 5.0 or newer that shows the live status of your services, read from [Uptime Kuma](https://github.com/louislam/uptime-kuma), as a block. It can go on the welcome page, My page, the project Overview, under any page you list, in a wiki page or on a page of its own.
 
 Only the services you list are shown, under the names you choose. Services that are down come first, a summary line says "All services up" or "1 of 5 down", and each row can show Kuma's latest response time. When Kuma cannot be reached the block says "Status unavailable" and the page around it renders as usual. Kuma is asked once per cache window, not once per page view.
 
