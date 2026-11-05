@@ -23,7 +23,7 @@ Redmine::Plugin.register :redmine_rubylode_uptime_kuma do
   author_url "https://github.com/rubylode"
   url "https://github.com/rubylode/redmine-rubylode-uptime-kuma"
   description "Shows the status of chosen services from Uptime Kuma, as a wiki macro, a page, a My page block and a partial"
-  version "2.0.0"
+  version "2.1.0"
   requires_redmine version_or_higher: "5.1.0"
 
   # With Rubylode Status installed the block lives on its Status page, so this plugin drops its own top menu item.
