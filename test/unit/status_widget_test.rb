@@ -150,7 +150,8 @@ class RubylodeUptimeKuma::StatusWidgetTest < ActiveSupport::TestCase
     with_status_plugin_registry do
       RubylodeUptimeKuma::StatusWidget.register
 
-      registration = FakeStatusRegistry.registrations.sole
+      assert_equal 1, FakeStatusRegistry.registrations.size
+      registration = FakeStatusRegistry.registrations.first
       assert_equal "uptime_kuma", registration[:key]
       assert_equal "Our services", registration[:title].call
       assert_equal "/status/uptime_kuma", registration[:path]
