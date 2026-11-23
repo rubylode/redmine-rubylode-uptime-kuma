@@ -2,6 +2,12 @@
 
 All notable changes to this plugin. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [2.2.0] - 2026-11-23
+
+### Added
+
+- An "Open Uptime Kuma" link under the summary line, on the Status page, the welcome page, My page, the project Overview, the plugin's page, the wiki macro and the compact block. It opens the dashboard link, or the Uptime Kuma address when that is empty, and shows even when Kuma cannot be reached.
+
 ## [2.1.2] - 2026-11-19
 
 No change to what the plugin does.
@@ -117,6 +123,7 @@ First version. Needs Redmine 7.0 or newer.
 - Theming through `--rubylode-uptime-kuma-*` custom properties, with dark mode.
 - A demo with a fake Kuma (`ruby bin/demo up`) and README screenshots.
 
+[2.2.0]: https://github.com/rubylode/redmine-rubylode-uptime-kuma/compare/v2.1.2...v2.2.0
 [2.1.2]: https://github.com/rubylode/redmine-rubylode-uptime-kuma/compare/v2.1.1...v2.1.2
 [2.1.1]: https://github.com/rubylode/redmine-rubylode-uptime-kuma/compare/v2.1.0...v2.1.1
 [2.1.0]: https://github.com/rubylode/redmine-rubylode-uptime-kuma/compare/v2.0.0...v2.1.0
