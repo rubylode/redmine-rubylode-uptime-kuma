@@ -111,6 +111,16 @@ module RubylodeUptimeKuma
       @settings["dashboard_url"].to_s.strip
     end
 
+    # What the "Open Uptime Kuma" link opens: the dashboard link, or the base address when that is empty. Nil unless the
+    # result is an http or https address, so nothing else ever becomes a link.
+    def source_link_address
+      address = dashboard_url.empty? ? base_url : dashboard_url
+      uri = URI.parse(address)
+      %w[http https].include?(uri.scheme) && !uri.host.to_s.empty? ? address : nil
+    rescue URI::InvalidURIError
+      nil
+    end
+
     def cache_seconds
       whole_number("cache_seconds", minimum: 0)
     end

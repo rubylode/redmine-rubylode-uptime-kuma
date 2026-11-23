@@ -208,3 +208,10 @@ table.list.rubylode-service-status-table .rubylode-service-status-response-time 
   margin-left: 0;
   font-weight: normal;
 }
+
+/* The link that opens Uptime Kuma, right-aligned under the summary. */
+.rubylode-service-status a.rubylode-uptime-kuma-source-link {
+  display: block;
+  margin: 0 0 6px;
+  text-align: right;
+}

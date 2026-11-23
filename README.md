@@ -11,7 +11,7 @@
 
 A plugin for Redmine 5.1 or newer that shows the status of your services, read from [Uptime Kuma](https://github.com/louislam/uptime-kuma), as a block. It can go on the welcome page, My page, the project Overview, under any page you list, in a wiki page or on a page of its own.
 
-Only the services you list are shown, under the names you choose. Services that are down come first, a summary line says "All services up" or "1 of 5 down", and each row can show Kuma's latest response time. When Kuma cannot be reached the block says "Status unavailable" and the page around it renders as usual. Kuma is asked at most once per cache window (60 seconds unless you change it), not once per page view, so the block can be that many seconds old.
+Only the services you list are shown, under the names you choose. Services that are down come first, a summary line says "All services up" or "1 of 5 down", and each row can show Kuma's latest response time. When Kuma cannot be reached the block says "Status unavailable" and the page around it renders as usual. Under the summary a link, "Open Uptime Kuma", opens the dashboard; it also shows when Kuma cannot be reached. Kuma is asked at most once per cache window (60 seconds unless you change it), not once per page view, so the block can be that many seconds old.
 
 ![All services up](docs/screenshots/service-status-all-up.png)
 
@@ -39,7 +39,7 @@ Everything except the token is a plugin setting.
 | Allowed hosts | empty | Hosts that may receive the credentials besides the address above. Empty means only the host of the address. |
 | Allow plain http | off | Needed for `http://` to anything but this machine. See Security. |
 | Services | empty | One per line: `Name \| URL \| Description \| Kuma monitor name`. Checked when you save; a bad line is reported with its number. Lines starting with `#` are ignored. The description may be empty; an empty monitor name uses the service name. |
-| Dashboard link | empty | Where a response time links to. Without it the time is plain text. |
+| Dashboard link | empty | Where a response time links to, and where the "Open Uptime Kuma" link goes. Without it the time is plain text and the link opens the Uptime Kuma address. |
 | Block title | Services | The heading of the block and the name of the top menu link. |
 | Show the block on | all off | Placements, see Where it shows. |
 | Who may see the block | Everyone who is signed in | Or administrators only. |

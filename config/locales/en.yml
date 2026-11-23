@@ -20,6 +20,7 @@ en:
         one: "%{up} of %{count} service up"
         other: "%{up} of %{count} services up"
       with_unknown: "%{summary}, %{unknown} unknown"
+    source_link: Open Uptime Kuma
     columns:
       service: Service
       description: Description
@@ -80,7 +81,7 @@ en:
           Billing | https://billing.example.com | Invoices | Billing app health
       dashboard_url:
         label: Dashboard link
-        hint: "Where a response time links to, for example https://uptime.example.com/dashboard. Empty means the response time is not a link."
+        hint: "Where a response time and the Open Uptime Kuma link go, for example https://uptime.example.com/dashboard. Empty means the response time is not a link and the link opens the Uptime Kuma address."
       show_response_time:
         label: Show the response time
       block_title:

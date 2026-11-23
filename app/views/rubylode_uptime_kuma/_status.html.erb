@@ -19,6 +19,10 @@
       <% unless on_status_page %>
         <p class="rubylode-service-status-summary is-<%= report.summary_state.to_s.dasherize %>"><%= report.summary %></p>
       <% end %>
+      <% source_link_address = settings.source_link_address %>
+      <% if source_link_address %>
+        <%= link_to l("rubylode_uptime_kuma.source_link"), source_link_address, class: "external rubylode-uptime-kuma-source-link" %>
+      <% end %>
       <% if compact %>
         <% report.services.select { |service| service.state == :down }.each do |service| %>
           <%= link_to service.name, service.url, class: "rubylode-service-status-compact-down" %>
